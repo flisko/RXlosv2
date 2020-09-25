@@ -386,14 +386,20 @@ class Store {
   exit = (payload) => {
     const account = store.getStore('account')
     const { asset } = payload.content
-
-    this._callExit(asset, account, (err, res) => {
+    this._checkApprovalrRvx(asset, account, asset.rRvxbalance, asset.rewardsAddress, (err) => {
       if (err) {
         return emitter.emit(ERROR, err);
       }
 
-      // return emitter.emit(EXIT_RETURNED, res)
+      this._callExit(asset, account, (err, res) => {
+        if (err) {
+          return emitter.emit(ERROR, err);
+        }
+  
+        // return emitter.emit(EXIT_RETURNED, res)
+      })
     })
+    
   }
 
   _callExit = async (asset, account, callback) => {
