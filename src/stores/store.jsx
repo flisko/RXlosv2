@@ -564,7 +564,7 @@ class Store {
     console.log(account);
     console.log(amount);
 
-    this._checkApprovalrRvx(asset, account, amount, asset.rewardsAddress, (err) => {
+    this._checkApproval(asset, account, amount, asset.rewardsAddress, (err) => {
       if (err) {
         return emitter.emit(ERROR, err);
       }
