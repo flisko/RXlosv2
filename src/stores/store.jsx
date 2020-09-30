@@ -49,7 +49,10 @@ import {
   CONFIGURE_RETURNED,
   WITHDRAW,
   GET_REWARDS,
-  EXIT
+  EXIT,
+  GET_BALANCES_FARMING,
+  GET_BALANCES_FARMING_RETURNED,
+  WITHDRAWFARM
 } from '../constants';
 import Web3 from 'web3';
 
@@ -85,6 +88,98 @@ class Store {
       ethPrice: 0,
       rRvxaddress: "",
       rvxaddress: "",
+      poolAssets: [
+        {
+          id: 1,
+          name: 'rRVX',
+          symbol: 'ETH',
+          description: 'First pool',
+          vaultSymbol: 'yETH',
+          tokens: [{
+            erc20address: config.rvxaddress,
+            rewardsAddress: config.yrxpooloneaddress,
+            rewardsABI: config.yrxpoolabi,
+            rewardsSymbol: 'yRVX',
+            yrxaddress:config.yrxaddress,
+            balance: 0,
+            yrxBalance: 0,
+            vaultBalance: 0,
+            decimals: 18,
+            deposit: true,
+            depositAll: false,
+            withdraw: true,
+            withdrawAll: true,
+            stakedBalance:0,
+            lastMeasurement: 10774489,
+            measurement: 1e18,
+            depositDisabled: true,
+            poolNum: 1,
+            exchange: "rRVX",
+            unit: "rRVX",
+          }]
+         
+        },
+        {
+          id: 2,
+          name: 'RVX/USDT',
+          symbol: 'WETH',
+          description: 'Wrappeth Ether',
+          vaultSymbol: 'yWETH',
+          tokens: [{
+            erc20address: config.rvxaddress,
+            rewardsAddress: config.yrxpooltwoaddress,
+            rewardsABI: config.yrxpoolabi,
+            rewardsSymbol: 'yRVX',
+            yrxaddress:config.yrxaddress,
+            balance: 0,
+            yrxBalance: 0,
+            vaultBalance: 0,
+            stakedBalance:0,
+            decimals: 18,
+            deposit: true,
+            depositAll: true,
+            withdraw: true,
+            withdrawAll: true,
+            lastMeasurement: 10774489,
+            measurement: 1e18,
+            depositDisabled: true,
+            poolNum: 2,
+            exchange: "RVX/aUSDC",
+            unit: "UNI-V2",
+          }]
+        
+        },
+        {
+          id: 3,
+          name: 'YRX/USDT 2/98',
+          symbol: 'YFI',
+          description: 'yearn.finance',
+          vaultSymbol: 'yYFI',
+          tokens:[{
+            erc20address: config.rvxaddress,
+            rewardsAddress: config.yrxpoolthreeaddress,
+            rewardsABI: config.yrxpoolabi,
+            rewardsSymbol: 'yRVX',
+            yrxaddress:config.yrxaddress,
+            balance: 0,
+            yrxBalance: 0,
+            vaultBalance: 0,
+            decimals: 18,
+            stakedBalance:0,
+            deposit: true,
+            depositAll: true,
+            withdraw: true,
+            withdrawAll: true,
+            lastMeasurement: 10695309,
+            measurement: 1e18,
+            poolNum: 3,
+            exchange: "aUSDC/YRX (98/2)",
+            unit: "BPT",
+          }]
+         
+        },
+      ],
+
       rewardPools: [
         {
           id: 'LOS v2',
@@ -166,6 +261,9 @@ class Store {
           case GET_BALANCES:
             this.getBalances(payload);
             break;
+          case GET_BALANCES_FARMING:
+            this.getBalancesFarming(payload)
+            break;
           case GET_BALANCES_PERPETUAL:
             this.getBalancesPerpetual(payload);
             break;
@@ -225,6 +323,9 @@ class Store {
             break;
           case WITHDRAW:
             this.withdraw(payload)
+            break;
+          case WITHDRAWFARM:
+            this.withdrawfarm(payload)
             break;
           case GET_REWARDS:
             this.getReward(payload)
@@ -290,14 +391,66 @@ class Store {
     }
   }
 
+  getBalancesFarming = async () =>{
+    const poolAssets = store.getStore('poolAssets')
+    const account = store.getStore('account')
+    const web3 = new Web3(store.getStore('web3context').library.provider);
+
+    const currentBlock = await web3.eth.getBlockNumber()
+    store.setStore({ currentBlock: currentBlock })
+    
+    async.map(poolAssets, (pool, callback) => {
+
+      async.map(pool.tokens, (token, callbackInner) => {
+        console.log("POOL ASSETS");
+
+        async.parallel([
+          (callbackInnerInner) => { this._getERC20Balance(web3, token, account, callbackInnerInner) },
+          (callbackInnerInner) => { this._getstakedBalance(web3, token, account, callbackInnerInner) },
+          (callbackInnerInner) => { this._getRewardsAvailable(web3, token, account, callbackInnerInner) }
+        ], (err, data) => {
+          if (err) {
+            console.log(err)
+            return callbackInner(err)
+          }
+
+          token.balance = data[0]
+          token.stakedBalance = data[1]
+          token.yrxBalance = data[2]
+
+          callbackInner(null, token)
+        })
+      }, (err, tokensData) => {
+        if (err) {
+          console.log(err)
+          return callback(err)
+        }
+
+        pool.tokens = tokensData
+        callback(null, pool)
+      })
+
+    }, (err, poolData) => {
+      if (err) {
+        console.log(err)
+        return emitter.emit(ERROR, err)
+      }
+      store.setStore({ poolAssets: poolData })
+      emitter.emit(GET_BALANCES_FARMING_RETURNED)
+      // emitter.emit(GET_BALANCES_RETURNED)
+    })
+  }
+
   getBalancesPerpetual = async () => {
     const pools = store.getStore('rewardPools')
+    const poolAssets = store.getStore('poolAssets')
     const account = store.getStore('account')
 
     const web3 = new Web3(store.getStore('web3context').library.provider);
 
     const currentBlock = await web3.eth.getBlockNumber()
     store.setStore({ currentBlock: currentBlock })
+
 
     async.map(pools, (pool, callback) => {
 
@@ -467,6 +620,7 @@ class Store {
         console.log(confirmationNumber, receipt);
         if (confirmationNumber == 2) {
           dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
+          dispatcher.dispatch({ type: GET_BALANCES_FARMING, content: {} })
         }
       })
       .on('receipt', function (receipt) {
@@ -511,6 +665,21 @@ class Store {
     })
   }
 
+  withdrawfarm = (payload) => {
+    const account = store.getStore('account')
+    const { asset, amount } = payload.content
+    console.log(asset);
+    console.log(account);
+    console.log(amount);
+      this._callWithdraw(asset, account, amount, (err, res) => {
+        if (err) {
+          return emitter.emit(ERROR, err);
+        }
+
+        return emitter.emit(STAKE_RETURNED, res)
+      })
+  }
+
 
 
   _callWithdraw = async (asset, account, amount, callback) => {
@@ -532,6 +701,7 @@ class Store {
         console.log(confirmationNumber, receipt);
         if (confirmationNumber == 2) {
           dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
+          dispatcher.dispatch({ type: GET_BALANCES_FARMING, content: {} })
         }
       })
       .on('receipt', function (receipt) {
@@ -598,6 +768,7 @@ class Store {
         console.log(confirmationNumber, receipt);
         if (confirmationNumber == 2) {
           dispatcher.dispatch({ type: GET_BALANCES, content: {} })
+          dispatcher.dispatch({ type: GET_BALANCES_FARMING, content: {} })
         }
       })
       .on('receipt', function (receipt) {

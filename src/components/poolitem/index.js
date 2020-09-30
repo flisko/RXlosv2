@@ -123,7 +123,7 @@ const styles = (theme) => ({
     marginRight: "1em",
   },
   buttonDeposit: {
-    width: "100%",
+    width: "50%",
     paddingTop: "1em",
     paddingBottom: "1em",
     borderRadius: 20,
@@ -185,6 +185,7 @@ const PoolItem = (props) => {
     onChangeTextInputDeposit,
     onChangeTextInputWithdraw,
     onToggleConfirmationDepositAlert,
+    onToggleConformationClaimRewardAlert,
     onToggleConfirmationWithdrawAlert,
     onToggleConfirmationUnstakeAndWithdrawAlert,
     depositAmount,
@@ -237,31 +238,36 @@ const PoolItem = (props) => {
           </div>
           <div>
             <Typography variant="h5" className={`${classes.col1_label3}`}>
-              Available to deposit
+              Available to deposit 
             </Typography>
           </div>
           <div>
             <Typography variant="h5" className={`${classes.col1_label4}`}>
-              {pool.balance} {pool.unit}
+              {Number(pool.tokens[0].balance).toFixed(6)} {pool.unit}
             </Typography>
           </div>
         </div>
         <div className={classes.col2}>
           <div>
-            <Typography variant="h4" className={`${classes.col2_label1}`}>
-              {pool.exchange}
+          <Typography variant="h4" className={`${classes.col3_label1}`}>
+             Staked Balance
+            </Typography>
+          </div>
+          <div>
+            <Typography variant="h3" className={`${classes.col3_label2}`}>
+              {pool.tokens[0].stakedBalance} {pool.tokens[0].unit}
             </Typography>
           </div>
         </div>
         <div className={classes.col3}>
           <div>
             <Typography variant="h4" className={`${classes.col3_label1}`}>
-              Available to deposit
+              Available to deposit 
             </Typography>
           </div>
           <div>
             <Typography variant="h3" className={`${classes.col3_label2}`}>
-              {pool.balance} {pool.unit}
+              {pool.tokens[0].balance} {pool.tokens[0].unit}
             </Typography>
           </div>
         </div>
@@ -274,7 +280,7 @@ const PoolItem = (props) => {
                 variant="h5"
                 className={`${classes.rvxBalanceLabel1}`}
               >
-                Balance: {pool.balance} rRVX
+                Balance: {pool.tokens[0].balance} {pool.tokens[0].unit}
               </Typography>
               <TextField
                 className={classes.textbox1}
@@ -299,13 +305,21 @@ const PoolItem = (props) => {
               >
                 <Typography variant="h4">Deposit</Typography>
               </Button>
+              <Button
+                variant="contained"
+                disableElevation
+                className={classes.buttonDeposit}
+                onClick={() => onToggleConformationClaimRewardAlert(null, pool.id)}
+              >
+                <Typography variant="h4">Claim Rewards</Typography>
+              </Button>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography
                 variant="h5"
                 className={`${classes.yrxBalanceLabel1}`}
               >
-                Balance: {pool.yrxBalance} YRX
+                Rewards Available: {pool.tokens[0].yrxBalance} {pool.tokens[0].rewardsSymbol}
               </Typography>
               <TextField
                 className={classes.textbox1}

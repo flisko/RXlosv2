@@ -36,7 +36,7 @@ import { colors } from "../../theme";
 
 import { injected } from "../../stores/connectors";
 
-import { CONNECTION_CONNECTED,CONFIGURE, CONFIGURE_RETURNED, CONNECTION_DISCONNECTED,GET_BALANCES_PERPETUAL, GET_BALANCES_PERPETUAL_RETURNED } from "../../constants";
+import { CONNECTION_CONNECTED,CONFIGURE, CONFIGURE_RETURNED, CONNECTION_DISCONNECTED,GET_BALANCES_PERPETUAL, GET_BALANCES_PERPETUAL_RETURNED,GET_BALANCES_FARMING,GET_BALANCES_FARMING_RETURNED } from "../../constants";
 
 import { useSelector } from "react-redux";
 
@@ -193,7 +193,6 @@ const Header = (props) => {
       emitter.on(CONNECTION_CONNECTED, connectionConnected);
       emitter.on(CONNECTION_DISCONNECTED, connectionDisconnected);
       emitter.on(CONFIGURE_RETURNED, configureReturned);
-      emitter.on(GET_BALANCES_PERPETUAL_RETURNED, getBalancesReturned);
 
       injected.isAuthorized().then((isAuthorized) => {
         console.log("isAuthorized", isAuthorized);
@@ -247,19 +246,18 @@ const Header = (props) => {
       emitter.removeListener(CONNECTION_CONNECTED, connectionConnected);
       emitter.removeListener(CONNECTION_DISCONNECTED, connectionDisconnected);
       emitter.removeListener(GET_BALANCES_PERPETUAL_RETURNED, connectionDisconnected);
+      emitter.removeListener(GET_BALANCES_FARMING_RETURNED, connectionDisconnected);
     };
   }, []);
+  
 
-  const getBalancesReturned = () => {
-    window.setTimeout(() => {
-     // dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
-    }, 15000)
-  }
  const configureReturned = () => {
    console.log(isconfigured);
    if(!isconfigured){
-    dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
+     console.log("SETTING ISCONFIGURED FARMING TO TRUE");
     isconfigured = true;
+    dispatcher.dispatch({ type: GET_BALANCES_FARMING, content: {} })
+    dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
    }
     
   }

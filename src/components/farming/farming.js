@@ -30,16 +30,20 @@ import bigDecimal from "js-big-decimal";
 import ConfirmationDepositAlert from "../alerts/confirmation";
 import ConfirmationWithdrawAlert from "../alerts/confirmation";
 import ConfirmationUnstakeAndWithdrawAlert from "../alerts/confirmation";
+import ConfirmationClaimRewardAlert from "../alerts/confirmation";
 
 import Header from "../header";
 import { colors } from "../../theme";
-
+import { CONNECTION_CONNECTED, CONNECTION_DISCONNECTED,
+  STAKE,
+  STAKE_RETURNED,CONFIGURE_RETURNED,GET_BALANCES_FARMING, GET_BALANCES_PERPETUAL,GET_BALANCES_FARMING_RETURNED, GET_BALANCES_PERPETUAL_RETURNED,CONFIGURE, WITHDRAW,GET_REWARDS,EXIT } from "../../constants";
 import YBackgroundImage2 from "../../assets/png/Y_background2_2000.png";
 
 import Store from "../../stores";
 const emitter = Store.emitter;
 const dispatcher = Store.dispatcher;
 const store = Store.store;
+var isconfigured = false;
 
 const Alert = (props) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -240,10 +244,13 @@ const AccordionDetails = withStyles((theme) => ({
 const Farming = (props) => {
   //const classes = useStyles();
   const { classes } = props;
+  const [rewardPool, setRewardPool] = useState({});
   const location = useLocation();
   const history = useHistory();
   const [defaultPoolId, setDefaultPoolId] = useState(1);
   const [expanded, setExpanded] = useState(defaultPoolId);
+  const [account, setAccount] = useState('');
+  const [address, setAddress] = useState("");
 
   const [pools, setPools] = useState(store.getStore("poolAssets"));
 
@@ -271,10 +278,18 @@ const Farming = (props) => {
     isConfirmationUnstakeAndWithdrawAlertOpen,
     setIsConfirmationUnstakeAndWithdrawAlertOpen,
   ] = useState(false);
+  const [
+    isConfirmationClaimRewardAlertOpen,
+    setIsConfirmationClaimRewardAlertOpen,
+  ] = useState(false);
 
   useEffect(() => {
     const bootstrapAsync = async () => {
       //console.log('selectedPoolId',selectedPoolId)
+      emitter.on(CONNECTION_CONNECTED, connectionConnected);
+      emitter.on(CONNECTION_DISCONNECTED, connectionDisconnected);
+      emitter.on(CONFIGURE_RETURNED, configureReturned);
+      emitter.on(GET_BALANCES_FARMING_RETURNED,farmingBalancesReturned);
 
       pools.map((pool) => {
         console.log("id", pool.id);
@@ -282,7 +297,94 @@ const Farming = (props) => {
     };
 
     bootstrapAsync();
+    return function cleanup() {
+      console.log('cleanup here in staking.js');
+      emitter.removeListener(CONNECTION_CONNECTED, connectionConnected);
+      emitter.removeListener(CONNECTION_DISCONNECTED, connectionDisconnected);
+      emitter.removeListener(GET_BALANCES_FARMING_RETURNED, connectionDisconnected);
+    };
   }, []);
+
+  /*const poolAssetsSet = () => {
+    console.log("setting reward pool");
+
+    const pool = store.getStore("poolAssets");
+    
+    console.log(pool[0]);
+   // setRewardPool(pool[0]);
+    console.log(rewardPool);
+    setRvxUsd({
+      usd:pool[0].tokens[0].rvxpriceusd,
+      unit:"$"
+    })
+    setBalanceNotYetStake({
+      amount:pool[0].tokens[0].balance,
+      unit:"RVX"
+    })
+    setBalanceCurrentlyStaking({
+      amount:pool[0].tokens[0].stakedBalance,
+      unit:"RVX"
+    })
+    setRewardsAvailable({
+      amount:pool[0].tokens[0].rewardsAvailable,
+      unit:"RVX"
+    })
+    setRrvxBalance({
+      amount:pool[0].tokens[0].rRvxbalance,
+      unit:"rRVX"
+    })
+    setTVL({
+      usd:pool[0].tokens[0].rvxpriceusd * pool[0].tokens[0].totalRVXstaked,
+      unit:"$"
+    })
+   
+  };*/
+
+  const configureReturned = () => {
+    console.log(isconfigured);
+    if(!isconfigured){
+      console.log("SETTING ISCONFIGURED TO TRUE");
+     isconfigured = true;
+     dispatcher.dispatch({ type: GET_BALANCES_FARMING, content: {} })
+     
+    }
+     
+   }
+
+   const farmingBalancesReturned = () => {
+  console.log("farming balances returned");
+  let farmingbalances = store.getStore("poolAssets");
+  console.log(farmingbalances)
+  setPools(farmingbalances)
+     
+   }
+
+  const connectionConnected = () => {
+    console.log("connectionConnected");
+
+    const account = store.getStore("account");
+    console.log("account", account);
+    console.log(isconfigured);
+    if(!isconfigured){
+      isconfigured = true;
+        dispatcher.dispatch({ type: CONFIGURE, content: {} })
+        
+      }
+    setAccount(account);
+    setAddress(
+      account.address.substring(0, 6) +
+        "..." +
+        account.address.substring(
+          account.address.length - 4,
+          account.address.length
+        )
+    );
+  };
+  const connectionDisconnected = () => {
+    console.log("connectionDisconnected");
+    setAccount('');
+    setAddress('');
+  };
 
   const handleChange = (poolId) => (event, isExpanded) => {
     console.log("poolId", poolId);
@@ -308,7 +410,7 @@ const Farming = (props) => {
         const poolItem = pools.filter((pool) => {
           return pool.id === selectedPoolId;
         });
-
+        console.log(poolItem);
         if (poolItem.length === 0) {
           setMessage("Pool Id not found");
           setOpenMessage(true);
@@ -353,7 +455,7 @@ const Farming = (props) => {
         }
 
         // deposit logic here
-
+        dispatcher.dispatch({ type: STAKE, content: { asset: poolItem[0].tokens[0], amount: amountValue } })
         setIsLoading(true);
         setTimeout(() => {
           setIsLoading(false);
@@ -423,7 +525,7 @@ const Farming = (props) => {
           setOpenMessage(true);
           return;
         }
-
+        dispatcher.dispatch({ type: WITHDRAW, content: { asset: poolItem[0].tokens[0], amount: amountValue } })
         // withdraw logic here
 
         setIsLoading(true);
@@ -497,7 +599,7 @@ const Farming = (props) => {
         }
 
         // unstake logic here
-
+        dispatcher.dispatch({ type: EXIT, content: { asset: poolItem[0].tokens[0] } })
         setIsLoading(true);
         setTimeout(() => {
           setIsLoading(false);
@@ -505,6 +607,49 @@ const Farming = (props) => {
       }
     } else {
       setIsConfirmationUnstakeAndWithdrawAlertOpen(true);
+    }
+  };
+
+  const onToggleConfirmationClaimRewarAlert = (opt, poolId) => {
+    console.log("opt", opt);
+    console.log("poolId", poolId);
+
+    if (poolId !== null) {
+      setSelectedPoolId(poolId);
+    }
+
+    if (isConfirmationClaimRewardAlertOpen) {
+      setIsConfirmationClaimRewardAlertOpen(false);
+      if (opt === "yes") {
+        console.log("withdrawAmountList", withdrawAmountList);
+
+        const poolItem = pools.filter((pool) => {
+          return pool.id === selectedPoolId;
+        });
+
+        if (poolItem.length === 0) {
+          setMessage("Pool Id not found");
+          setOpenMessage(true);
+          return;
+        }
+       // console.log(poolItem);
+        const rewardBalance = poolItem[0].tokens[0].yrxBalance;
+
+        if (Number(rewardBalance) === 0) {
+          setMessage("You have no rewards to claim");
+          setOpenMessage(true);
+          return;
+        }
+
+        // claim reward logic here
+        dispatcher.dispatch({ type: GET_REWARDS, content: { asset: poolItem[0].tokens[0] } })
+        setIsLoading(true);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 3000);
+      }
+    } else {
+      setIsConfirmationClaimRewardAlertOpen(true);
     }
   };
 
@@ -608,6 +753,7 @@ const Farming = (props) => {
           onChangeTextInputWithdraw={onChangeTextInputWithdraw}
           onToggleConfirmationDepositAlert={onToggleConfirmationDepositAlert}
           onToggleConfirmationWithdrawAlert={onToggleConfirmationWithdrawAlert}
+          onToggleConformationClaimRewardAlert={onToggleConfirmationClaimRewarAlert}
           onToggleConfirmationUnstakeAndWithdrawAlert={
             onToggleConfirmationUnstakeAndWithdrawAlert
           }
@@ -642,6 +788,11 @@ const Farming = (props) => {
         open={isConfirmationUnstakeAndWithdrawAlertOpen}
         onToggleDialog={onToggleConfirmationUnstakeAndWithdrawAlert}
         description={"Are you sure to proceed to unstake and withdraw?"}
+      />
+      <ConfirmationClaimRewardAlert
+        open={isConfirmationClaimRewardAlertOpen}
+        onToggleDialog={onToggleConfirmationClaimRewarAlert}
+        description={"Are you sure to claim rewards?"}
       />
       <Backdrop className={classes.backdrop} open={isLoading}>
         <CircularProgress color="inherit" />
