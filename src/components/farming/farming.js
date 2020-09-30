@@ -36,7 +36,7 @@ import Header from "../header";
 import { colors } from "../../theme";
 import { CONNECTION_CONNECTED, CONNECTION_DISCONNECTED,
   STAKE,
-  STAKE_RETURNED,CONFIGURE_RETURNED,GET_BALANCES_FARMING, GET_BALANCES_PERPETUAL,GET_BALANCES_FARMING_RETURNED, GET_BALANCES_PERPETUAL_RETURNED,CONFIGURE, WITHDRAW,GET_REWARDS,EXIT } from "../../constants";
+  STAKE_RETURNED,WITHDRAWFARM,CONFIGURE_RETURNED,GET_BALANCES_FARMING, GET_BALANCES_PERPETUAL,GET_BALANCES_FARMING_RETURNED, GET_BALANCES_PERPETUAL_RETURNED,CONFIGURE, WITHDRAW,GET_REWARDS,EXIT } from "../../constants";
 import YBackgroundImage2 from "../../assets/png/Y_background2_2000.png";
 
 import Store from "../../stores";
@@ -417,7 +417,7 @@ const Farming = (props) => {
           return;
         }
 
-        const currentBalance = poolItem[0].balance;
+        const currentBalance = poolItem[0].tokens[0].balance;
 
         const arrayDepositAmountList = Object.entries(depositAmountList);
 
@@ -489,7 +489,9 @@ const Farming = (props) => {
           return;
         }
 
-        const currentBalance = poolItem[0].yrxBalance;
+      //  const currentBalance = poolItem[0].yrxBalance;
+        const stakedBalance = poolItem[0].tokens[0].stakedBalance;
+       
 
         const arrayWithdrawAmountList = Object.entries(withdrawAmountList);
 
@@ -501,7 +503,6 @@ const Farming = (props) => {
 
         const amountKey = arrayWithdrawAmountList[0][0];
         const amountValue = arrayWithdrawAmountList[0][1];
-
         if (amountKey !== "txtWithdraw_" + selectedPoolId) {
           setMessage("There is an error amount to withdraw");
           setOpenMessage(true);
@@ -520,12 +521,12 @@ const Farming = (props) => {
           return;
         }
 
-        if (currentBalance < amountValue) {
-          setMessage("You have entered an amount greater than your balance");
+        if (stakedBalance < amountValue) {
+          setMessage("You have entered an amount greater than your staked balance");
           setOpenMessage(true);
           return;
         }
-        dispatcher.dispatch({ type: WITHDRAW, content: { asset: poolItem[0].tokens[0], amount: amountValue } })
+        dispatcher.dispatch({ type: WITHDRAWFARM, content: { asset: poolItem[0].tokens[0], amount: amountValue } })
         // withdraw logic here
 
         setIsLoading(true);
@@ -704,7 +705,7 @@ const Farming = (props) => {
       return pool.id === poolid;
     });
 
-    let bigAmount = new bigDecimal(poolItem[0].balance);
+    let bigAmount = new bigDecimal(poolItem[0].tokens[0].balance);
     let bigPercentage = new bigDecimal(percentage);
     let big100 = new bigDecimal("100");
     let new_amount = bigAmount
@@ -723,7 +724,7 @@ const Farming = (props) => {
       return pool.id === poolid;
     });
 
-    let bigAmount = new bigDecimal(poolItem[0].yrxBalance);
+    let bigAmount = new bigDecimal(poolItem[0].tokens[0].yrxBalance);
     let bigPercentage = new bigDecimal(percentage);
     let big100 = new bigDecimal("100");
     let new_amount = bigAmount
