@@ -15,7 +15,7 @@ const Routes = (props) => {
 //   console.log("address", address);
 
   return (
-    <IpfsRouter>
+    <IpfsRouter basename="/">
       <Switch>
         <Route exact path="/" component={Home} />
         <Route exact path="/staking" component={Staking} />

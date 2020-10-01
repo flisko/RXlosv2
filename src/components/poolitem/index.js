@@ -112,13 +112,13 @@ const styles = (theme) => ({
   },
   rvxBalanceLabel1: {
     textAlign: "right",
-    color: colors.white,
+    color: colors.pink,
     marginBottom: "1em",
     marginRight: "1em",
   },
   yrxBalanceLabel1: {
     textAlign: "right",
-    color: colors.white,
+    color: colors.pink,
     marginBottom: "1em",
     marginRight: "1em",
   },
@@ -131,7 +131,7 @@ const styles = (theme) => ({
     borderWidth: "2px",
     borderStyle: "solid",
     borderColor: colors.borderColor1,
-    color: colors.white,
+    color: colors.pink,
     textTransform: "none",
   },
   buttonPercentageContainer: {
@@ -155,7 +155,7 @@ const styles = (theme) => ({
     borderWidth: "2px",
     borderStyle: "solid",
     borderColor: colors.borderColor1,
-    color: colors.white,
+    color: colors.pink,
     textTransform: "none",
     flexBasis: "49%",
   },
@@ -249,7 +249,7 @@ const PoolItem = (props) => {
         </div>
         <div className={classes.col2}>
           <div>
-          <Typography variant="h4" className={`${classes.col3_label1}`}>
+          <Typography variant="h4" className={`${classes.col1_label1}`}>
              Staked Balance
             </Typography>
           </div>
@@ -261,7 +261,7 @@ const PoolItem = (props) => {
         </div>
         <div className={classes.col3}>
           <div>
-            <Typography variant="h4" className={`${classes.col3_label1}`}>
+            <Typography variant="h4" className={`${classes.col1_label1}`}>
               Available to deposit 
             </Typography>
           </div>
@@ -280,7 +280,7 @@ const PoolItem = (props) => {
                 variant="h5"
                 className={`${classes.rvxBalanceLabel1}`}
               >
-                Balance: {pool.tokens[0].balance} {pool.tokens[0].unit}
+                Balance <span style={{color:"white"}}>{pool.tokens[0].balance} {pool.tokens[0].unit}</span> 
               </Typography>
               <TextField
                 className={classes.textbox1}
@@ -319,7 +319,7 @@ const PoolItem = (props) => {
                 variant="h5"
                 className={`${classes.yrxBalanceLabel1}`}
               >
-                Rewards Available: {pool.tokens[0].yrxBalance} {pool.tokens[0].rewardsSymbol}
+                Rewards Available: <span style={{color:"white"}}>{pool.tokens[0].yrxBalance} {pool.tokens[0].rewardsSymbol}</span>
               </Typography>
               <TextField
                 className={classes.textbox1}

@@ -34,9 +34,11 @@ import { injected } from "../../stores/connectors";
 import Header from "../header";
 import { colors } from "../../theme";
 import Store from "../../stores";
-import { CONNECTION_CONNECTED, CONNECTION_DISCONNECTED,
+import {
+  CONNECTION_CONNECTED, CONNECTION_DISCONNECTED,
   STAKE,
-  STAKE_RETURNED, GET_BALANCES_PERPETUAL, GET_BALANCES_PERPETUAL_RETURNED,CONFIGURE, WITHDRAW,GET_REWARDS,EXIT } from "../../constants";
+  STAKE_RETURNED, GET_BALANCES_PERPETUAL, GET_BALANCES_PERPETUAL_RETURNED, CONFIGURE, WITHDRAW, GET_REWARDS, EXIT
+} from "../../constants";
 import RXBackgroundImage2 from "../../assets/png/RX_background2_2000.png";
 const emitter = Store.emitter;
 const dispatcher = Store.dispatcher;
@@ -173,13 +175,13 @@ const styles = (theme) => ({
   },
   label1: {
     marginBottom: "1em",
-    color: colors.white,
+    color: colors.textColor1,
   },
   value1: {
     color: colors.white,
   },
   label2: {
-    color: colors.white,
+    color: colors.textColor1,
     width: "8em",
   },
   value2: {
@@ -195,7 +197,7 @@ const styles = (theme) => ({
     color: colors.white,
   },
   buttonStake: {
-    color: colors.textColor2,
+    color: colors.textColor1
   },
   // stakingDividerContainer: {
   //   width: "50%",
@@ -229,7 +231,7 @@ const styles = (theme) => ({
     textTransform: "none",
   },
   rewardsText: {
-    color: colors.textColor2,
+    color: colors.textColor1,
     marginBottom: "1em",
   },
   rewardsValueText: {
@@ -267,32 +269,9 @@ const Staking = (props) => {
   );
   const [isUnstakeAllDialogOpen, setIsUnstakeAllDialogOpen] = useState(false);
   const [openExitClaimModal, setOpenExitClaimModal] = useState(false);
-  const [balanceNotYetStake, setBalanceNotYetStake] = useState({
-    amount: 0,
-    unit: "RVX",
-  });
+  const [pools, setPools] = useState(store.getStore("rewardPools"));
   const [address, setAddress] = useState("");
-  const [balanceCurrentlyStaking, setBalanceCurrentlyStaking] = useState({
-    amount: 0,
-    unit: "RVX",
-  });
   const [account, setAccount] = useState('');
-  const [rewardsAvailable, setRewardsAvailable] = useState({
-    amount: 0,
-    unit: "RVX",
-  });
-  const [rvxUsd, setRvxUsd] = useState({
-    usd: "",
-    unit: "$",
-  });
-  const [TVL, setTVL] = useState({
-    usd: "",
-    unit: "$",
-  });
-  const [rRvxBalance, setRrvxBalance] = useState({
-    amount: 0,
-    unit: "rRVX",
-  });
   let isconfigured = false;
   const [rewardPool, setRewardPool] = useState({});
   const [depositAmount, setDepositAmount] = useState('');
@@ -315,9 +294,16 @@ const Staking = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    emitter.on(CONNECTION_CONNECTED, connectionConnected);
-    emitter.on(CONNECTION_DISCONNECTED, connectionDisconnected);
-    emitter.on(GET_BALANCES_PERPETUAL_RETURNED, rewardPoolSet);
+    const bootstrapAsync = async () => {
+      emitter.on(CONNECTION_CONNECTED, connectionConnected);
+      emitter.on(CONNECTION_DISCONNECTED, connectionDisconnected);
+      emitter.on(GET_BALANCES_PERPETUAL_RETURNED, balancesReturned);
+      pools.map((pool) => {
+        console.log("id", pool.id);
+      });
+    }
+
+    bootstrapAsync();
 
     return function cleanup() {
       console.log('cleanup here in staking.js');
@@ -325,7 +311,16 @@ const Staking = (props) => {
       emitter.removeListener(CONNECTION_DISCONNECTED, connectionDisconnected);
       emitter.removeListener(GET_BALANCES_PERPETUAL_RETURNED, connectionDisconnected);
     };
-  });
+  },[]);
+
+  const balancesReturned = () => {
+    console.log("balances returned");
+    let rewardPools = store.getStore("rewardPools");
+    console.log(rewardPools)
+    setPools(rewardPools)
+       
+     }
+  
 
   const onToggleStakeDialog = () => {
     if (isStakeDialogOpen) {
@@ -335,62 +330,62 @@ const Staking = (props) => {
       setDepositAmount("");
     }
   };
-  
+
   const connectionConnected = () => {
     console.log("connectionConnected");
 
     const account = store.getStore("account");
     console.log("account", account);
     console.log(isconfigured);
-    if(!isconfigured){
+    if (!isconfigured) {
       isconfigured = true;
-        dispatcher.dispatch({ type: CONFIGURE, content: {} })
-        
-      }
+      dispatcher.dispatch({ type: CONFIGURE, content: {} })
+
+    }
     setAccount(account);
     setAddress(
       account.address.substring(0, 6) +
-        "..." +
-        account.address.substring(
-          account.address.length - 4,
-          account.address.length
-        )
+      "..." +
+      account.address.substring(
+        account.address.length - 4,
+        account.address.length
+      )
     );
   };
-  const rewardPoolSet = () => {
-    console.log("setting reward pool");
-
-    const pool = store.getStore("rewardPools");
+  /* const rewardPoolSet = () => {
+     console.log("setting reward pool");
+ 
+     const pool = store.getStore("rewardPools");
+     
+     console.log(pool[0]);
+    // setRewardPool(pool[0]);
+     console.log(rewardPool);
+     setRvxUsd({
+       usd:pool[0].tokens[0].rvxpriceusd,
+       unit:"$"
+     })
+     setBalanceNotYetStake({
+       amount:pool[0].tokens[0].balance,
+       unit:"RVX"
+     })
+     setBalanceCurrentlyStaking({
+       amount:pool[0].tokens[0].stakedBalance,
+       unit:"RVX"
+     })
+     setRewardsAvailable({
+       amount:pool[0].tokens[0].rewardsAvailable,
+       unit:"RVX"
+     })
+     setRrvxBalance({
+       amount:pool[0].tokens[0].rRvxbalance,
+       unit:"rRVX"
+     })
+     setTVL({
+       usd:pool[0].tokens[0].rvxpriceusd * pool[0].tokens[0].totalRVXstaked,
+       unit:"$"
+     })
     
-    console.log(pool[0]);
-   // setRewardPool(pool[0]);
-    console.log(rewardPool);
-    setRvxUsd({
-      usd:pool[0].tokens[0].rvxpriceusd,
-      unit:"$"
-    })
-    setBalanceNotYetStake({
-      amount:pool[0].tokens[0].balance,
-      unit:"RVX"
-    })
-    setBalanceCurrentlyStaking({
-      amount:pool[0].tokens[0].stakedBalance,
-      unit:"RVX"
-    })
-    setRewardsAvailable({
-      amount:pool[0].tokens[0].rewardsAvailable,
-      unit:"RVX"
-    })
-    setRrvxBalance({
-      amount:pool[0].tokens[0].rRvxbalance,
-      unit:"rRVX"
-    })
-    setTVL({
-      usd:pool[0].tokens[0].rvxpriceusd * pool[0].tokens[0].totalRVXstaked,
-      unit:"$"
-    })
-   
-  };
+   };*/
 
   const connectionDisconnected = () => {
     console.log("connectionDisconnected");
@@ -428,7 +423,7 @@ const Staking = (props) => {
           return;
         }
 
-        if (balanceNotYetStake.amount < depositAmount) {
+        if (pool[0].tokens[0].balance < depositAmount) {
           setMessage("You have entered an amount greater than your balance");
           setOpenMessage(true);
           return;
@@ -481,18 +476,18 @@ const Staking = (props) => {
           return;
         }
 
-        if (balanceNotYetStake.amount < withdrawAmount) {
+        if (pool[0].tokens[0].balance < withdrawAmount) {
           setMessage("You have entered an amount greater than your balance");
           setOpenMessage(true);
           return;
         }
 
-        onToggleUnstakeDialog();       
+        onToggleUnstakeDialog();
         console.log("proceed to unstake");
         console.log(pool[0])
         dispatcher.dispatch({ type: WITHDRAW, content: { asset: pool[0].tokens[0], amount: withdrawAmount } })
         // deposit logic here
-       
+
 
         setIsLoading(true);
         setTimeout(() => {
@@ -578,7 +573,7 @@ const Staking = (props) => {
   const onToggleDepositPercentage = (percentage) => {
     console.log("onToggleDepositPercentage", percentage);
 
-    let bigAmount = new bigDecimal(balanceNotYetStake.amount);
+    let bigAmount = new bigDecimal(pools[0].tokens[0].balance);
     let bigPercentage = new bigDecimal(percentage);
     let big100 = new bigDecimal("100");
     let new_amount = bigAmount
@@ -599,7 +594,7 @@ const Staking = (props) => {
   const onToggleWithdrawPercentage = (percentage) => {
     console.log("onToggleWithdrawPercentage", percentage);
 
-    let bigAmount = new bigDecimal(balanceCurrentlyStaking.amount);
+    let bigAmount = new bigDecimal(pools[0].tokens[0].stakedBalance);
     let bigPercentage = new bigDecimal(percentage);
     let big100 = new bigDecimal("100");
     let new_amount = bigAmount
@@ -621,7 +616,7 @@ const Staking = (props) => {
                 Total Value Locked (USD)
               </Typography>
               <Typography variant="h3" className={classes.value1}>
-                {TVL.usd}  {TVL.unit}
+                {pools[0].tokens[0].rvxpriceusd * pools[0].tokens[0].totalRVXstaked}  $
               </Typography>
             </Paper>
           </Grid>
@@ -631,7 +626,7 @@ const Staking = (props) => {
                 RVX Price
               </Typography>
               <Typography variant="h3" className={classes.value1}>
-                {rvxUsd.usd}   {rvxUsd.unit}
+                {pools[0].tokens[0].rvxpriceusd}   $
               </Typography>
             </Paper>
           </Grid>
@@ -672,10 +667,10 @@ const Staking = (props) => {
                     variant="h3"
                     className={`${classes.label3} ${classes.label3_gap_down}`}
                   >
-                    Balance not stake yet
+                    Balance not staked yet
                   </Typography>
                   <Typography variant="h3" className={classes.value3}>
-                    {balanceNotYetStake.amount} {balanceNotYetStake.unit}
+                    {pools[0].tokens[0].balance} RVX
                   </Typography>
                 </div>
               </Grid>
@@ -688,7 +683,7 @@ const Staking = (props) => {
                     Currently Staking
                   </Typography>
                   <Typography variant="h3" className={classes.value3}>
-                    {balanceCurrentlyStaking.amount} {balanceCurrentlyStaking.unit}
+                    {pools[0].tokens[0].stakedBalance} RVX
                   </Typography>
                 </div>
               </Grid>
@@ -724,22 +719,22 @@ const Staking = (props) => {
           <Grid item xs={12}>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
-              <div className={classes.paper7}>
+                <div className={classes.paper7}>
                   <Typography variant="h4" className={classes.rewardsText}>
                     rRvx Balance
                   </Typography>
                   <Typography variant="h4" className={classes.rewardsValueText}>
-                    {rRvxBalance.amount}  {rRvxBalance.unit}
+                    {pools[0].tokens[0].rRvxbalance}  rRVX
                   </Typography>
                 </div>
-                </Grid>
+              </Grid>
               <Grid item xs={12} sm={6}>
                 <div className={classes.paper6}>
                   <Typography variant="h4" className={classes.rewardsText}>
                     Rewards Available
                   </Typography>
                   <Typography variant="h4" className={classes.rewardsValueText}>
-                    {rewardsAvailable.amount}  {rewardsAvailable.unit}
+                    {pools[0].tokens[0].rewardsAvailable}  RVX
                   </Typography>
                 </div>
               </Grid>
@@ -783,7 +778,7 @@ const Staking = (props) => {
         onToggleDialog={onToggleStakeDialog}
         onToggleConfirmationAlert={onToggleConfirmationDepositAlert}
         onExitDialog={onExitStakeDialog}
-        balanceNotYetStake={balanceNotYetStake}
+        balanceNotYetStake={pools[0].tokens[0].balance}
         depositAmount={depositAmount}
         onChangeTextInputDeposit={onChangeTextInputDeposit}
         onToggleDepositPercentage={onToggleDepositPercentage}
@@ -793,7 +788,7 @@ const Staking = (props) => {
         onToggleDialog={onToggleUnstakeDialog}
         onToggleConfirmationAlert={onToggleConfirmationWithdrawAlert}
         onExitDialog={onExitUnstakeDialog}
-        balanceCurrentlyStaking={rRvxBalance}
+        balanceCurrentlyStaking={pools[0].tokens[0].stakedBalance}
         withdrawAmount={withdrawAmount}
         onChangeTextInputWithdraw={onChangeTextInputWithdraw}
         onToggleWithdrawPercentage={onToggleWithdrawPercentage}
@@ -823,7 +818,7 @@ const Staking = (props) => {
       <Backdrop
         className={classes.backdrop}
         open={isLoading}
-        //onClick={onToggleLoading}
+      //onClick={onToggleLoading}
       >
         <CircularProgress color="inherit" />
       </Backdrop>

@@ -3,9 +3,9 @@ const config = {
   rRvxaddress:"0x0E778A448d49f01BB08A81AE72D104c523685fC4",
   losrewardsaddress:"0x17584cFDfb113431a2ae5eA7c9C1b3558904faDf",
   yrxaddress:"0x260aD5e6Eb9119006efd66052120481bC77E3046",
-  yrxpooloneaddress:"0x5de3112cd00BB062aEDc7a6E49fa37454345C4aC",
-  yrxpooltwoaddress:"0x44b857B097221eB231E64ee24C3082E05f259979",
-  yrxpoolthreeaddress:"0x9B18D5b4e8B2604F055E5A9df33715FEfc7eFB2d",
+  yrxpooloneaddress:"0xF348a446BA084dC90d63E79753C6E5957463F745",
+  yrxpooltwoaddress:"0x9bD58943ce4D86Fc6582e017AcF898b8a76B411d",
+  yrxpoolthreeaddress:"0x134AE1977a2F90CA4073F4E98f4cD7E14b16A4F7",
   yrxpoolabi:[
     {
       "anonymous": false,

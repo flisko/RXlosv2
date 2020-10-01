@@ -96,7 +96,7 @@ class Store {
           description: 'First pool',
           vaultSymbol: 'yETH',
           tokens: [{
-            erc20address: config.rvxaddress,
+            erc20address: config.rRvxaddress,
             rewardsAddress: config.yrxpooloneaddress,
             rewardsABI: config.yrxpoolabi,
             rewardsSymbol: 'yRVX',
@@ -126,7 +126,7 @@ class Store {
           description: 'Wrappeth Ether',
           vaultSymbol: 'yWETH',
           tokens: [{
-            erc20address: config.rvxaddress,
+            erc20address: config.rRvxaddress,
             rewardsAddress: config.yrxpooltwoaddress,
             rewardsABI: config.yrxpoolabi,
             rewardsSymbol: 'yRVX',
@@ -156,7 +156,7 @@ class Store {
           description: 'yearn.finance',
           vaultSymbol: 'yYFI',
           tokens:[{
-            erc20address: config.rvxaddress,
+            erc20address: config.rRvxaddress,
             rewardsAddress: config.yrxpoolthreeaddress,
             rewardsABI: config.yrxpoolabi,
             rewardsSymbol: 'yRVX',
@@ -767,7 +767,7 @@ class Store {
       .on('confirmation', function (confirmationNumber, receipt) {
         console.log(confirmationNumber, receipt);
         if (confirmationNumber == 2) {
-          dispatcher.dispatch({ type: GET_BALANCES, content: {} })
+          dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
           dispatcher.dispatch({ type: GET_BALANCES_FARMING, content: {} })
         }
       })

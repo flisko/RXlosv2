@@ -91,8 +91,8 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonBack: {
     backgroundColor: "transparent",
-    color: "#0b8f92",
-    border: "2px solid rgba(11, 143, 146, 0.5)",
+    color: "#06C4DE",
+    border: "2px solid rgb(6 196 222 / 1)",
   },
   drawer: {
     //backgroundColor: 'red'
