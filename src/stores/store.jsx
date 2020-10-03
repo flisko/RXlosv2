@@ -99,7 +99,7 @@ class Store {
             erc20address: config.rRvxaddress,
             rewardsAddress: config.yrxpooloneaddress,
             rewardsABI: config.yrxpoolabi,
-            rewardsSymbol: 'yRVX',
+            rewardsSymbol: 'YRX',
             yrxaddress:config.yrxaddress,
             balance: 0,
             yrxBalance: 0,
@@ -129,7 +129,7 @@ class Store {
             erc20address: config.rRvxaddress,
             rewardsAddress: config.yrxpooltwoaddress,
             rewardsABI: config.yrxpoolabi,
-            rewardsSymbol: 'yRVX',
+            rewardsSymbol: 'YRX',
             yrxaddress:config.yrxaddress,
             balance: 0,
             yrxBalance: 0,
@@ -159,7 +159,7 @@ class Store {
             erc20address: config.rRvxaddress,
             rewardsAddress: config.yrxpoolthreeaddress,
             rewardsABI: config.yrxpoolabi,
-            rewardsSymbol: 'yRVX',
+            rewardsSymbol: 'YRX',
             yrxaddress:config.yrxaddress,
             balance: 0,
             yrxBalance: 0,
@@ -504,8 +504,8 @@ class Store {
 
     try {
       var balance = await erc20Contract.methods.balanceOf(account.address).call({ from: account.address });
-      balance = parseFloat(balance) / 10 ** asset.decimals
-      callback(null, parseFloat(balance))
+      balance = web3.utils.fromWei(balance.toString(),"ether");
+      callback(null, balance)
     } catch (ex) {
       return callback(ex)
     }
@@ -1202,9 +1202,9 @@ class Store {
 
       try {
         var balance = await erc20Contract.methods.balanceOf(account.address).call({ from: account.address });
-        balance = parseFloat(balance) / 10 ** asset.decimals
+        balance = web3.utils.fromWei(balance.toString(),"ether");
         console.log(balance);
-        callback(null, parseFloat(balance))
+        callback(null,balance)
       } catch (ex) {
         console.log(ex)
         return callback(ex)

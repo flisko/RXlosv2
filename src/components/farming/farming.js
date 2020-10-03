@@ -21,7 +21,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import PoolItem from "../poolitem";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
-import bigDecimal from "js-big-decimal";
+import bigDecimal, { RoundingModes } from "js-big-decimal";
 
 //import ConfirmDepositAlert from "../alerts/confirmdeposit";
 //import ConfirmWithdrawAlert from "../alerts/confirmwithdraw";
@@ -562,38 +562,10 @@ const Farming = (props) => {
           return;
         }
 
-        const currentBalance = poolItem[0].yrxBalance;
+        const currentBalance = poolItem[0].stakedBalance;
 
-        const arrayWithdrawAmountList = Object.entries(withdrawAmountList);
 
-        if (arrayWithdrawAmountList.length === 0) {
-          setMessage("Please enter amount to unstake");
-          setOpenMessage(true);
-          return;
-        }
-
-        const amountKey = arrayWithdrawAmountList[0][0];
-        const amountValue = arrayWithdrawAmountList[0][1];
-
-        if (amountKey !== "txtWithdraw_" + selectedPoolId) {
-          setMessage("There is an error amount to unstake");
-          setOpenMessage(true);
-          return;
-        }
-
-        if (amountValue === "") {
-          setMessage("Please enter amount to unstake");
-          setOpenMessage(true);
-          return;
-        }
-
-        if (isNaN(amountValue)) {
-          setMessage("Please enter valid amount in number");
-          setOpenMessage(true);
-          return;
-        }
-
-        if (currentBalance < amountValue) {
+        if (currentBalance == 0) {
           setMessage("You have entered an amount greater than your balance");
           setOpenMessage(true);
           return;
@@ -710,8 +682,7 @@ const Farming = (props) => {
     let big100 = new bigDecimal("100");
     let new_amount = bigAmount
       .multiply(bigPercentage)
-      .divide(big100)
-      .round(5, bigDecimal.RoundingModes.DOWN);
+      .divide(big100,18)
 
     setDepositAmountList({
       ...depositAmountList,
@@ -723,14 +694,13 @@ const Farming = (props) => {
     const poolItem = pools.filter((pool) => {
       return pool.id === poolid;
     });
-
-    let bigAmount = new bigDecimal(poolItem[0].tokens[0].yrxBalance);
+    
+    let bigAmount = new bigDecimal(poolItem[0].tokens[0].stakedBalance);
     let bigPercentage = new bigDecimal(percentage);
     let big100 = new bigDecimal("100");
     let new_amount = bigAmount
       .multiply(bigPercentage)
-      .divide(big100)
-      .round(5, bigDecimal.RoundingModes.DOWN);
+      .divide(big100,18)
 
     setWithdrawAmountList({
       ...withdrawAmountList,

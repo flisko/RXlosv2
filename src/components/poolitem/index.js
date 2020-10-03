@@ -287,7 +287,7 @@ const PoolItem = (props) => {
                 id={`txtDeposit_${pool.id}`}
                 label=""
                 variant="outlined"
-                placeholder="0.00"
+                placeholder="Deposit"
                 onChange={onChangeTextInputDeposit}
                 value={depositAmount ? depositAmount : ""}
               />
@@ -326,7 +326,7 @@ const PoolItem = (props) => {
                 id={`txtWithdraw_${pool.id}`}
                 label=""
                 variant="outlined"
-                placeholder="0.00"
+                placeholder="Withdraw"
                 onChange={onChangeTextInputWithdraw}
                 value={withdrawAmount ? withdrawAmount : ""}
               />
