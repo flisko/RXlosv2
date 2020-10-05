@@ -183,7 +183,7 @@ class Store {
       rewardPools: [
         {
           id: 'LOS v2',
-          name: 'SANGUINE POOL',
+          name: 'LOS v2',
           website: 'curve.fi/y',
           link: 'https://curve.fi/y',
           depositsEnabled: true,
@@ -1227,9 +1227,9 @@ class Store {
 
       try {
         var balance = await erc20Contract.methods.balanceOf(account.address).call({ from: account.address });
-        balance = parseFloat(balance) / 10 ** asset.decimals
+        balance =web3.utils.fromWei(balance,"ether");
         console.log(balance);
-        callback(null, parseFloat(balance))
+        callback(null, balance)
       } catch (ex) {
         console.log(ex)
         return callback(ex)

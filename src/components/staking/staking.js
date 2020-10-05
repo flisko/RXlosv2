@@ -397,6 +397,8 @@ const Staking = (props) => {
     const pool = store.getStore("rewardPools");
     console.log("onToggleDepositConfirmationAlert", opt);
     if (isOpenConfirmationDepositAlert) {
+      let tokenbalance = new bigDecimal(pool[0].tokens[0].balance.toString())
+      let depositamount = new bigDecimal(depositAmount.toString())
       setIsOpenConfirmationDepositAlert(false);
       if (opt === "yes") {
         if (typeof depositAmount === "undefined") {
@@ -423,7 +425,7 @@ const Staking = (props) => {
           return;
         }
 
-        if (pool[0].tokens[0].balance < depositAmount) {
+        if (depositamount.compareTo(tokenbalance) === 1 ) {
           setMessage("You have entered an amount greater than your balance");
           setOpenMessage(true);
           return;
@@ -450,6 +452,8 @@ const Staking = (props) => {
     const pool = store.getStore("rewardPools");
     console.log("onToggleConfirmationWithdrawAlert", opt);
     if (isOpenConfirmationWithdrawAlert) {
+      let tokenbalance = new bigDecimal(pool[0].tokens[0].rRvxbalance.toString())
+      let withdrawamount = new bigDecimal(withdrawAmount.toString())
       setIsOpenConfirmationWithdrawAlert(false);
       if (opt === "yes") {
         if (typeof withdrawAmount === "undefined") {
@@ -476,7 +480,7 @@ const Staking = (props) => {
           return;
         }
 
-        if (pool[0].tokens[0].balance < withdrawAmount) {
+        if (withdrawamount.compareTo(tokenbalance) === 1 ) {
           setMessage("You have entered an amount greater than your balance");
           setOpenMessage(true);
           return;
@@ -578,8 +582,7 @@ const Staking = (props) => {
     let big100 = new bigDecimal("100");
     let new_amount = bigAmount
       .multiply(bigPercentage)
-      .divide(big100)
-      .round(5, bigDecimal.RoundingModes.DOWN);
+      .divide(big100,18)
 
     setDepositAmount(new_amount.getValue());
   };
@@ -594,13 +597,12 @@ const Staking = (props) => {
   const onToggleWithdrawPercentage = (percentage) => {
     console.log("onToggleWithdrawPercentage", percentage);
 
-    let bigAmount = new bigDecimal(pools[0].tokens[0].stakedBalance);
+    let bigAmount = new bigDecimal(pools[0].tokens[0].rRvxbalance);
     let bigPercentage = new bigDecimal(percentage);
     let big100 = new bigDecimal("100");
     let new_amount = bigAmount
       .multiply(bigPercentage)
-      .divide(big100)
-      .round(5, bigDecimal.RoundingModes.DOWN);
+      .divide(big100,18)
 
     setWithdrawAmount(new_amount.getValue());
   };
@@ -670,7 +672,7 @@ const Staking = (props) => {
                     Balance not staked yet
                   </Typography>
                   <Typography variant="h3" className={classes.value3}>
-                    {pools[0].tokens[0].balance} RVX
+                    {Math.floor(pools[0].tokens[0].balance * 100000000) / 100000000} RVX
                   </Typography>
                 </div>
               </Grid>
@@ -683,7 +685,7 @@ const Staking = (props) => {
                     Currently Staking
                   </Typography>
                   <Typography variant="h3" className={classes.value3}>
-                    {pools[0].tokens[0].stakedBalance} RVX
+                    {Math.floor(pools[0].tokens[0].stakedBalance * 100000000)/100000000} RVX
                   </Typography>
                 </div>
               </Grid>
@@ -724,7 +726,7 @@ const Staking = (props) => {
                     rRvx Balance
                   </Typography>
                   <Typography variant="h4" className={classes.rewardsValueText}>
-                    {pools[0].tokens[0].rRvxbalance}  rRVX
+                    {Math.floor(pools[0].tokens[0].rRvxbalance * 100000000) / 100000000}  rRVX
                   </Typography>
                 </div>
               </Grid>

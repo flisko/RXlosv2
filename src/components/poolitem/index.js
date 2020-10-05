@@ -243,7 +243,7 @@ const PoolItem = (props) => {
           </div>
           <div>
             <Typography variant="h5" className={`${classes.col1_label4}`}>
-              {Number(pool.tokens[0].balance).toFixed(6)} {pool.unit}
+              {Math.floor(pool.tokens[0].balance * 100000000) / 100000000} {pool.unit}
             </Typography>
           </div>
         </div>
@@ -255,7 +255,7 @@ const PoolItem = (props) => {
           </div>
           <div>
             <Typography variant="h3" className={`${classes.col3_label2}`}>
-              {pool.tokens[0].stakedBalance} {pool.tokens[0].unit}
+              {Math.floor(pool.tokens[0].stakedBalance*100000000)/100000000} {pool.tokens[0].unit}
             </Typography>
           </div>
         </div>
@@ -267,7 +267,7 @@ const PoolItem = (props) => {
           </div>
           <div>
             <Typography variant="h3" className={`${classes.col3_label2}`}>
-              {pool.tokens[0].balance} {pool.tokens[0].unit}
+              {Math.floor(pool.tokens[0].balance * 100000000) / 100000000} {pool.tokens[0].unit}
             </Typography>
           </div>
         </div>
@@ -280,7 +280,7 @@ const PoolItem = (props) => {
                 variant="h5"
                 className={`${classes.rvxBalanceLabel1}`}
               >
-                Balance <span style={{color:"white"}}>{pool.tokens[0].balance} {pool.tokens[0].unit}</span> 
+                Balance <span style={{color:"white"}}>{Math.floor(pool.tokens[0].balance * 100000000) / 100000000} {pool.tokens[0].unit}</span> 
               </Typography>
               <TextField
                 className={classes.textbox1}
@@ -319,7 +319,7 @@ const PoolItem = (props) => {
                 variant="h5"
                 className={`${classes.yrxBalanceLabel1}`}
               >
-                Rewards Available: <span style={{color:"white"}}>{pool.tokens[0].yrxBalance} {pool.tokens[0].rewardsSymbol}</span>
+                Rewards Available: <span style={{color:"white"}}>{Math.floor(pool.tokens[0].yrxBalance * 100000000) / 100000000} {pool.tokens[0].rewardsSymbol}</span>
               </Typography>
               <TextField
                 className={classes.textbox1}
