@@ -416,7 +416,8 @@ const Farming = (props) => {
           setOpenMessage(true);
           return;
         }
-
+        let tokenbalance = new bigDecimal(poolItem[0].tokens[0].balance.toString())
+   
         const currentBalance = poolItem[0].tokens[0].balance;
 
         const arrayDepositAmountList = Object.entries(depositAmountList);
@@ -429,7 +430,7 @@ const Farming = (props) => {
 
         const amountKey = arrayDepositAmountList[0][0];
         const amountValue = arrayDepositAmountList[0][1];
-
+        let depositamount = new bigDecimal(arrayDepositAmountList[0][1].toString())
         if (amountKey !== "txtDeposit_" + selectedPoolId) {
           setMessage("There is an error amount to deposit");
           setOpenMessage(true);
@@ -447,12 +448,17 @@ const Farming = (props) => {
           setOpenMessage(true);
           return;
         }
-
-        if (currentBalance < amountValue) {
+        if (depositamount.compareTo(tokenbalance) === 1 ) {
           setMessage("You have entered an amount greater than your balance");
           setOpenMessage(true);
           return;
         }
+
+       /* if (amount < amountValue) {
+          setMessage("You have entered an amount greater than your balance");
+          setOpenMessage(true);
+          return;
+        }*/
 
         // deposit logic here
         dispatcher.dispatch({ type: STAKE, content: { asset: poolItem[0].tokens[0], amount: amountValue } })
@@ -490,9 +496,9 @@ const Farming = (props) => {
         }
 
       //  const currentBalance = poolItem[0].yrxBalance;
-        const stakedBalance = poolItem[0].tokens[0].stakedBalance;
+       // const stakedBalance = poolItem[0].tokens[0].stakedBalance;
        
-
+        let tokenbalance = new bigDecimal(poolItem[0].tokens[0].stakedBalance.toString())
         const arrayWithdrawAmountList = Object.entries(withdrawAmountList);
 
         if (arrayWithdrawAmountList.length === 0) {
@@ -503,6 +509,7 @@ const Farming = (props) => {
 
         const amountKey = arrayWithdrawAmountList[0][0];
         const amountValue = arrayWithdrawAmountList[0][1];
+        let withdrawamount = new bigDecimal(arrayWithdrawAmountList[0][1].toString())
         if (amountKey !== "txtWithdraw_" + selectedPoolId) {
           setMessage("There is an error amount to withdraw");
           setOpenMessage(true);
@@ -521,11 +528,18 @@ const Farming = (props) => {
           return;
         }
 
-        if (stakedBalance < amountValue) {
-          setMessage("You have entered an amount greater than your staked balance");
+
+        if (withdrawamount.compareTo(tokenbalance) === 1 ) {
+          setMessage("You have entered an amount greater than your balance");
           setOpenMessage(true);
           return;
         }
+
+       /* if (stakedBalance < amountValue) {
+          setMessage("You have entered an amount greater than your staked balance");
+          setOpenMessage(true);
+          return;
+        }*/
         dispatcher.dispatch({ type: WITHDRAWFARM, content: { asset: poolItem[0].tokens[0], amount: amountValue } })
         // withdraw logic here
 
