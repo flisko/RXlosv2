@@ -1,7 +1,7 @@
 const config = {
   rvxaddress:"0x5d921bD3676Be048A3EF7F6bB535d1993421DCA5",
-  rRvxaddress:"0x0E778A448d49f01BB08A81AE72D104c523685fC4",
-  losrewardsaddress:"0x17584cFDfb113431a2ae5eA7c9C1b3558904faDf",
+  rRvxaddress:"0xdeD5a34911F2a67e3cC2C56A437ec93045d35286", //0xdeD5a34911F2a67e3cC2C56A437ec93045d35286
+  losrewardsaddress:"0x9CEe9AC29Af304Ce8B1E63cD7AD18534ab97b790", //0x9CEe9AC29Af304Ce8B1E63cD7AD18534ab97b790
   yrxaddress:"0x260aD5e6Eb9119006efd66052120481bC77E3046",
   yrxpooloneaddress:"0xF348a446BA084dC90d63E79753C6E5957463F745",
   yrxpooltwoaddress:"0x9bD58943ce4D86Fc6582e017AcF898b8a76B411d",
@@ -495,6 +495,39 @@ const config = {
   ],
   losrewardsabi:[
     {
+      "constant": false,
+      "inputs": [],
+      "name": "exit",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "getReward",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "reward",
+          "type": "uint256"
+        }
+      ],
+      "name": "notifyRewardAmount",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "anonymous": false,
       "inputs": [
         {
@@ -512,6 +545,15 @@ const config = {
       ],
       "name": "OwnershipTransferred",
       "type": "event"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
       "anonymous": false,
@@ -546,6 +588,36 @@ const config = {
       "type": "event"
     },
     {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_rewardDistribution",
+          "type": "address"
+        }
+      ],
+      "name": "setRewardDistribution",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "stake",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "anonymous": false,
       "inputs": [
         {
@@ -563,6 +635,36 @@ const config = {
       ],
       "name": "Staked",
       "type": "event"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "withdraw",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
       "anonymous": false,
@@ -585,8 +687,14 @@ const config = {
     },
     {
       "constant": true,
-      "inputs": [],
-      "name": "DURATION",
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOf",
       "outputs": [
         {
           "internalType": "uint256",
@@ -600,14 +708,38 @@ const config = {
     },
     {
       "constant": true,
-      "inputs": [
+      "inputs": [],
+      "name": "currentEpoch",
+      "outputs": [
         {
-          "internalType": "address",
-          "name": "account",
-          "type": "address"
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
         }
       ],
-      "name": "balanceOf",
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "currentEpochReward",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "DURATION",
       "outputs": [
         {
           "internalType": "uint256",
@@ -641,24 +773,9 @@ const config = {
       "type": "function"
     },
     {
-      "constant": false,
-      "inputs": [],
-      "name": "exit",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
       "constant": true,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "account",
-          "type": "address"
-        }
-      ],
-      "name": "getRRVXBalance",
+      "inputs": [],
+      "name": "EPOCH_REWARD",
       "outputs": [
         {
           "internalType": "uint256",
@@ -671,18 +788,15 @@ const config = {
       "type": "function"
     },
     {
-      "constant": false,
-      "inputs": [],
-      "name": "getReward",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
       "constant": true,
-      "inputs": [],
-      "name": "initreward",
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "getRRVXBalance",
       "outputs": [
         {
           "internalType": "uint256",
@@ -740,18 +854,18 @@ const config = {
       "type": "function"
     },
     {
-      "constant": false,
-      "inputs": [
+      "constant": true,
+      "inputs": [],
+      "name": "NUMBER_EPOCHS",
+      "outputs": [
         {
-          "internalType": "uint256",
-          "name": "reward",
-          "type": "uint256"
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
         }
       ],
-      "name": "notifyRewardAmount",
-      "outputs": [],
       "payable": false,
-      "stateMutability": "nonpayable",
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -782,45 +896,6 @@ const config = {
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "rRVXcollection",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "rRvx",
-      "outputs": [
-        {
-          "internalType": "contract IERC20",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [],
-      "name": "renounceOwnership",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -892,6 +967,36 @@ const config = {
     {
       "constant": true,
       "inputs": [],
+      "name": "rRvx",
+      "outputs": [
+        {
+          "internalType": "contract IERC20",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "rRVXcollection",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
       "name": "rvx",
       "outputs": [
         {
@@ -905,39 +1010,39 @@ const config = {
       "type": "function"
     },
     {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_rewardDistribution",
-          "type": "address"
-        }
-      ],
-      "name": "setRewardDistribution",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
+      "constant": true,
+      "inputs": [],
+      "name": "starttime",
+      "outputs": [
         {
           "internalType": "uint256",
-          "name": "amount",
+          "name": "",
           "type": "uint256"
         }
       ],
-      "name": "stake",
-      "outputs": [],
       "payable": false,
-      "stateMutability": "nonpayable",
+      "stateMutability": "view",
       "type": "function"
     },
     {
       "constant": true,
       "inputs": [],
-      "name": "starttime",
+      "name": "TOTAL_REWARD",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "totalAccumulatedReward",
       "outputs": [
         {
           "internalType": "uint256",
@@ -965,21 +1070,6 @@ const config = {
       "type": "function"
     },
     {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "transferOwnership",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
       "constant": true,
       "inputs": [
         {
@@ -998,21 +1088,6 @@ const config = {
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "withdraw",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
       "type": "function"
     }
   ],

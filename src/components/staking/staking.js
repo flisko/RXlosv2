@@ -685,7 +685,7 @@ const Staking = (props) => {
                     Currently Staking
                   </Typography>
                   <Typography variant="h3" className={classes.value3}>
-                    {Math.floor(pools[0].tokens[0].stakedBalance * 100000000)/100000000} RVX
+                    {Math.floor(pools[0].tokens[0].rRvxbalance * 100000000)/100000000} RVX
                   </Typography>
                 </div>
               </Grid>
