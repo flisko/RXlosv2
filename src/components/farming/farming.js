@@ -36,6 +36,7 @@ import Header from "../header";
 import { colors } from "../../theme";
 import { CONNECTION_CONNECTED, CONNECTION_DISCONNECTED,
   STAKE,
+  EXITFARM,
   STAKE_RETURNED,WITHDRAWFARM,CONFIGURE_RETURNED,GET_BALANCES_FARMING, GET_BALANCES_PERPETUAL,GET_BALANCES_FARMING_RETURNED, GET_BALANCES_PERPETUAL_RETURNED,CONFIGURE, WITHDRAW,GET_REWARDS,EXIT } from "../../constants";
 import YBackgroundImage2 from "../../assets/png/Y_background2_2000.png";
 
@@ -586,7 +587,7 @@ const Farming = (props) => {
         }
 
         // unstake logic here
-        dispatcher.dispatch({ type: EXIT, content: { asset: poolItem[0].tokens[0] } })
+        dispatcher.dispatch({ type: EXITFARM, content: { asset: poolItem[0].tokens[0] } })
         setIsLoading(true);
         setTimeout(() => {
           setIsLoading(false);

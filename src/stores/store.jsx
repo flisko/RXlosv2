@@ -50,6 +50,7 @@ import {
   WITHDRAW,
   GET_REWARDS,
   EXIT,
+  EXITFARM,
   GET_BALANCES_FARMING,
   GET_BALANCES_FARMING_RETURNED,
   WITHDRAWFARM
@@ -333,6 +334,9 @@ class Store {
           case EXIT:
             this.exit(payload)
             break;
+          case EXITFARM:
+            this.exitfarm(payload)
+            break;
           default: {
           }
         }
@@ -548,10 +552,22 @@ class Store {
         if (err) {
           return emitter.emit(ERROR, err);
         }
-  
+        dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
         // return emitter.emit(EXIT_RETURNED, res)
       })
     })
+    
+  }
+  exitfarm = (payload) => {
+    const account = store.getStore('account')
+    const { asset } = payload.content
+      this._callExit(asset, account, (err, res) => {
+        if (err) {
+          return emitter.emit(ERROR, err);
+        }
+        dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
+        // return emitter.emit(EXIT_RETURNED, res)
+      })
     
   }
 
@@ -601,7 +617,7 @@ class Store {
       if (err) {
         return emitter.emit(ERROR, err);
       }
-
+      dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
       // return emitter.emit(GET_REWARDS_RETURNED, res)
     })
   }
@@ -659,7 +675,7 @@ class Store {
         if (err) {
           return emitter.emit(ERROR, err);
         }
-
+        dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
         return emitter.emit(STAKE_RETURNED, res)
       })
     })
@@ -675,7 +691,7 @@ class Store {
         if (err) {
           return emitter.emit(ERROR, err);
         }
-
+        dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
         return emitter.emit(STAKE_RETURNED, res)
       })
   }
@@ -743,7 +759,7 @@ class Store {
         if (err) {
           return emitter.emit(ERROR, err);
         }
-
+        dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
         return emitter.emit(STAKE_RETURNED, res)
       })
     })

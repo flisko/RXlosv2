@@ -270,6 +270,7 @@ const Staking = (props) => {
   const [isUnstakeAllDialogOpen, setIsUnstakeAllDialogOpen] = useState(false);
   const [openExitClaimModal, setOpenExitClaimModal] = useState(false);
   const [pools, setPools] = useState(store.getStore("rewardPools"));
+  const [farmingpool, setFarmingPool] = useState(store.getStore("poolAssets"));
   const [address, setAddress] = useState("");
   const [account, setAccount] = useState('');
   let isconfigured = false;
@@ -316,8 +317,10 @@ const Staking = (props) => {
   const balancesReturned = () => {
     console.log("balances returned");
     let rewardPools = store.getStore("rewardPools");
+    let poolAssets = store.getStore("poolAssets");
     console.log(rewardPools)
     setPools(rewardPools)
+    setFarmingPool(poolAssets)
        
      }
   
@@ -685,7 +688,7 @@ const Staking = (props) => {
                     Currently Staking
                   </Typography>
                   <Typography variant="h3" className={classes.value3}>
-                    {Math.floor(pools[0].tokens[0].rRvxbalance * 100000000)/100000000} RVX
+                    {Math.floor(pools[0].tokens[0].stakedBalance * 100000000)/100000000} RVX
                   </Typography>
                 </div>
               </Grid>
@@ -726,7 +729,7 @@ const Staking = (props) => {
                     rRvx Balance
                   </Typography>
                   <Typography variant="h4" className={classes.rewardsValueText}>
-                    {Math.floor(pools[0].tokens[0].rRvxbalance * 100000000) / 100000000}  rRVX
+                    {Math.floor(pools[0].tokens[0].rRvxbalance * 100000000) / 100000000}  rRVX (Staked in YRX pool1: {farmingpool[0].tokens[0].stakedBalance} rRVX )
                   </Typography>
                 </div>
               </Grid>
