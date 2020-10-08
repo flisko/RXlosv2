@@ -127,7 +127,7 @@ class Store {
           description: 'Wrappeth Ether',
           vaultSymbol: 'yWETH',
           tokens: [{
-            erc20address: config.rRvxaddress,
+            erc20address: "0xBd455F35BC5e531999B1C8fC72DF938767aA69b9",
             rewardsAddress: config.yrxpooltwoaddress,
             rewardsABI: config.yrxpoolabi,
             rewardsSymbol: 'YRX',
@@ -150,7 +150,7 @@ class Store {
           }]
 
         },
-        {
+       /* {
           id: 3,
           name: 'YRX/USDT 2/98',
           symbol: 'YFI',
@@ -178,7 +178,7 @@ class Store {
             unit: "BPT",
           }]
 
-        },
+        },*/
       ],
 
       rewardPools: [
