@@ -101,7 +101,7 @@ class Store {
             rewardsAddress: config.yrxpooloneaddress,
             rewardsABI: config.yrxpoolabi,
             rewardsSymbol: 'YRX',
-            yrxaddress:config.yrxaddress,
+            yrxaddress: config.yrxaddress,
             balance: 0,
             yrxBalance: 0,
             vaultBalance: 0,
@@ -110,7 +110,7 @@ class Store {
             depositAll: false,
             withdraw: true,
             withdrawAll: true,
-            stakedBalance:0,
+            stakedBalance: 0,
             lastMeasurement: 10774489,
             measurement: 1e18,
             depositDisabled: true,
@@ -118,7 +118,7 @@ class Store {
             exchange: "rRVX",
             unit: "rRVX",
           }]
-         
+
         },
         {
           id: 2,
@@ -131,11 +131,11 @@ class Store {
             rewardsAddress: config.yrxpooltwoaddress,
             rewardsABI: config.yrxpoolabi,
             rewardsSymbol: 'YRX',
-            yrxaddress:config.yrxaddress,
+            yrxaddress: config.yrxaddress,
             balance: 0,
             yrxBalance: 0,
             vaultBalance: 0,
-            stakedBalance:0,
+            stakedBalance: 0,
             decimals: 18,
             deposit: true,
             depositAll: true,
@@ -148,7 +148,7 @@ class Store {
             exchange: "RVX/aUSDC",
             unit: "UNI-V2",
           }]
-        
+
         },
         {
           id: 3,
@@ -156,17 +156,17 @@ class Store {
           symbol: 'YFI',
           description: 'yearn.finance',
           vaultSymbol: 'yYFI',
-          tokens:[{
+          tokens: [{
             erc20address: config.rRvxaddress,
             rewardsAddress: config.yrxpoolthreeaddress,
             rewardsABI: config.yrxpoolabi,
             rewardsSymbol: 'YRX',
-            yrxaddress:config.yrxaddress,
+            yrxaddress: config.yrxaddress,
             balance: 0,
             yrxBalance: 0,
             vaultBalance: 0,
             decimals: 18,
-            stakedBalance:0,
+            stakedBalance: 0,
             deposit: true,
             depositAll: true,
             withdraw: true,
@@ -177,7 +177,7 @@ class Store {
             exchange: "aUSDC/YRX (98/2)",
             unit: "BPT",
           }]
-         
+
         },
       ],
 
@@ -203,8 +203,8 @@ class Store {
               stakedBalance: 0,
               rewardsAvailable: 0,
               rRvxbalance: 0,
-              totalRVXstaked:0,
-              rvxpriceusd:0
+              totalRVXstaked: 0,
+              rvxpriceusd: 0
             }
           ]
         }],
@@ -395,14 +395,14 @@ class Store {
     }
   }
 
-  getBalancesFarming = async () =>{
+  getBalancesFarming = async () => {
     const poolAssets = store.getStore('poolAssets')
     const account = store.getStore('account')
     const web3 = new Web3(store.getStore('web3context').library.provider);
 
     const currentBlock = await web3.eth.getBlockNumber()
     store.setStore({ currentBlock: currentBlock })
-    
+
     async.map(poolAssets, (pool, callback) => {
 
       async.map(pool.tokens, (token, callbackInner) => {
@@ -508,7 +508,7 @@ class Store {
 
     try {
       var balance = await erc20Contract.methods.balanceOf(account.address).call({ from: account.address });
-      balance = web3.utils.fromWei(balance.toString(),"ether");
+      balance = web3.utils.fromWei(balance.toString(), "ether");
       callback(null, balance)
     } catch (ex) {
       return callback(ex)
@@ -556,19 +556,19 @@ class Store {
         // return emitter.emit(EXIT_RETURNED, res)
       })
     })
-    
+
   }
   exitfarm = (payload) => {
     const account = store.getStore('account')
     const { asset } = payload.content
-      this._callExit(asset, account, (err, res) => {
-        if (err) {
-          return emitter.emit(ERROR, err);
-        }
-        dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
-        // return emitter.emit(EXIT_RETURNED, res)
-      })
-    
+    this._callExit(asset, account, (err, res) => {
+      if (err) {
+        return emitter.emit(ERROR, err);
+      }
+      dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
+      // return emitter.emit(EXIT_RETURNED, res)
+    })
+
   }
 
   _callExit = async (asset, account, callback) => {
@@ -583,12 +583,14 @@ class Store {
       })
       .on('confirmation', function (confirmationNumber, receipt) {
         console.log(confirmationNumber, receipt);
-        if (confirmationNumber == 2) {
-          dispatcher.dispatch({ type: GET_BALANCES, content: {} })
+        if (confirmationNumber == 1) {
+          dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
+          dispatcher.dispatch({ type: GET_BALANCES_FARMING, content: {} })
         }
       })
       .on('receipt', function (receipt) {
         console.log(receipt);
+
       })
       .on('error', function (error) {
         if (!error.toString().includes("-32601")) {
@@ -634,13 +636,14 @@ class Store {
       })
       .on('confirmation', function (confirmationNumber, receipt) {
         console.log(confirmationNumber, receipt);
-        if (confirmationNumber == 2) {
+        if (confirmationNumber == 1) {
           dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
           dispatcher.dispatch({ type: GET_BALANCES_FARMING, content: {} })
         }
       })
       .on('receipt', function (receipt) {
         console.log(receipt);
+
       })
       .on('error', function (error) {
         if (!error.toString().includes("-32601")) {
@@ -687,13 +690,13 @@ class Store {
     console.log(asset);
     console.log(account);
     console.log(amount);
-      this._callWithdraw(asset, account, amount, (err, res) => {
-        if (err) {
-          return emitter.emit(ERROR, err);
-        }
-        dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
-        return emitter.emit(STAKE_RETURNED, res)
-      })
+    this._callWithdraw(asset, account, amount, (err, res) => {
+      if (err) {
+        return emitter.emit(ERROR, err);
+      }
+      dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
+      return emitter.emit(STAKE_RETURNED, res)
+    })
   }
 
 
@@ -715,13 +718,14 @@ class Store {
       })
       .on('confirmation', function (confirmationNumber, receipt) {
         console.log(confirmationNumber, receipt);
-        if (confirmationNumber == 2) {
+        if (confirmationNumber == 1) {
           dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
           dispatcher.dispatch({ type: GET_BALANCES_FARMING, content: {} })
         }
       })
       .on('receipt', function (receipt) {
         console.log(receipt);
+
       })
       .on('error', function (error) {
         if (!error.toString().includes("-32601")) {
@@ -782,13 +786,14 @@ class Store {
       })
       .on('confirmation', function (confirmationNumber, receipt) {
         console.log(confirmationNumber, receipt);
-        if (confirmationNumber == 2) {
+        if (confirmationNumber == 1) {
           dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
           dispatcher.dispatch({ type: GET_BALANCES_FARMING, content: {} })
         }
       })
       .on('receipt', function (receipt) {
         console.log(receipt);
+
       })
       .on('error', function (error) {
         if (!error.toString().includes("-32601")) {
@@ -1218,9 +1223,9 @@ class Store {
 
       try {
         var balance = await erc20Contract.methods.balanceOf(account.address).call({ from: account.address });
-        balance = web3.utils.fromWei(balance.toString(),"ether");
+        balance = web3.utils.fromWei(balance.toString(), "ether");
         console.log(balance);
-        callback(null,balance)
+        callback(null, balance)
       } catch (ex) {
         console.log(ex)
         return callback(ex)
@@ -1243,7 +1248,7 @@ class Store {
 
       try {
         var balance = await erc20Contract.methods.balanceOf(account.address).call({ from: account.address });
-        balance =web3.utils.fromWei(balance,"ether");
+        balance = web3.utils.fromWei(balance, "ether");
         console.log(balance);
         callback(null, balance)
       } catch (ex) {
@@ -1404,12 +1409,12 @@ class Store {
   lookUpPrices = async (id_array) => {
     let ids = id_array.join("%2C");
     return $.ajax({
-        url: "https://api.coingecko.com/api/v3/simple/price?ids=" + ids + "&vs_currencies=usd",
-        type: 'GET'
+      url: "https://api.coingecko.com/api/v3/simple/price?ids=" + ids + "&vs_currencies=usd",
+      type: 'GET'
     })
   }
 
-  _getRvxUsdValue = async(callback) => {
+  _getRvxUsdValue = async (callback) => {
     console.log("GETTING DOLLAR VALUE");
     try {
       let dollarvalue = await this.lookUpPrices(["rivex"]);
