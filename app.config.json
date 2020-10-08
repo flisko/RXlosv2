@@ -1,10 +1,11 @@
+
 {
-    "apps": [
-      {
-        "name": "rx-yield-farming",
-        "script": "cd build && npx serve -l 5059",
-        "interpreter": "none",
-        "args": ""
-      }
-    ]
-  }
+  "apps": [
+    {
+      "name": "rx-yield-farming",
+      "script": "cd build && npx serve -l 5059",
+      "interpreter": "none",
+      "args": ""
+    }
+  ]
+}
