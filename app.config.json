@@ -2,7 +2,7 @@
     "apps": [
       {
         "name": "rx-yield-farming",
-        "script": "cd build && npx serve -l 5056",
+        "script": "cd build && npx serve -l 5059",
         "interpreter": "none",
         "args": ""
       }
