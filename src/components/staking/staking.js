@@ -40,6 +40,14 @@ import {
   STAKE_RETURNED, GET_BALANCES_PERPETUAL, GET_BALANCES_PERPETUAL_RETURNED, CONFIGURE, WITHDRAW, GET_REWARDS, EXIT
 } from "../../constants";
 import RXBackgroundImage2 from "../../assets/png/RX_background2_2000.png";
+var ranges = [
+  { divider: 1e18, suffix: "E" },
+  { divider: 1e15, suffix: "P" },
+  { divider: 1e12, suffix: "T" },
+  { divider: 1e9, suffix: "G" },
+  { divider: 1e6, suffix: "M" },
+  { divider: 1e3, suffix: "K" },
+];
 const emitter = Store.emitter;
 const dispatcher = Store.dispatcher;
 const store = Store.store;
@@ -312,7 +320,7 @@ const Staking = (props) => {
       emitter.removeListener(CONNECTION_DISCONNECTED, connectionDisconnected);
       emitter.removeListener(GET_BALANCES_PERPETUAL_RETURNED, connectionDisconnected);
     };
-  },[]);
+  }, []);
 
   const balancesReturned = () => {
     console.log("balances returned");
@@ -321,9 +329,18 @@ const Staking = (props) => {
     console.log(rewardPools)
     setPools(rewardPools)
     setFarmingPool(poolAssets)
-       
-     }
-  
+
+  }
+
+  const formatNumber = (n) => {
+    for (var i = 0; i < ranges.length; i++) {
+      if (n >= ranges[i].divider) {
+        return (n / ranges[i].divider).toString() + ranges[i].suffix;
+      }
+    }
+    return n.toString();
+  };
+
 
   const onToggleStakeDialog = () => {
     if (isStakeDialogOpen) {
@@ -428,7 +445,7 @@ const Staking = (props) => {
           return;
         }
 
-        if (depositamount.compareTo(tokenbalance) === 1 ) {
+        if (depositamount.compareTo(tokenbalance) === 1) {
           setMessage("You have entered an amount greater than your balance");
           setOpenMessage(true);
           return;
@@ -483,7 +500,7 @@ const Staking = (props) => {
           return;
         }
 
-        if (withdrawamount.compareTo(tokenbalance) === 1 ) {
+        if (withdrawamount.compareTo(tokenbalance) === 1) {
           setMessage("You have entered an amount greater than your balance");
           setOpenMessage(true);
           return;
@@ -585,7 +602,7 @@ const Staking = (props) => {
     let big100 = new bigDecimal("100");
     let new_amount = bigAmount
       .multiply(bigPercentage)
-      .divide(big100,18)
+      .divide(big100, 18)
 
     setDepositAmount(new_amount.getValue());
   };
@@ -605,10 +622,22 @@ const Staking = (props) => {
     let big100 = new bigDecimal("100");
     let new_amount = bigAmount
       .multiply(bigPercentage)
-      .divide(big100,18)
+      .divide(big100, 18)
 
     setWithdrawAmount(new_amount.getValue());
   };
+
+  const prettyTVL = () => {
+    let num = parseFloat(pools[0].tokens[0].rvxpriceusd *  pools[0].tokens[0].totalRVXstaked);
+    num = num.toString().slice(0, 12);
+    num = Number(num).toFixed(2);
+    var s = formatNumber(num);
+    let lastchar = s.slice(-1);
+    var x = s.indexOf(".");
+    s = s.slice(0, x + 2);
+    s = s + lastchar;
+    return s;
+  }
 
   return (
     <div className={classes.root}>
@@ -621,7 +650,7 @@ const Staking = (props) => {
                 Total Value Locked (USD)
               </Typography>
               <Typography variant="h3" className={classes.value1}>
-                {pools[0].tokens[0].rvxpriceusd * pools[0].tokens[0].totalRVXstaked}  $
+                {prettyTVL()}  $
               </Typography>
             </Paper>
           </Grid>
@@ -637,16 +666,16 @@ const Staking = (props) => {
           </Grid>
           <Grid item xs={12} sm={4}>
             <Paper className={classes.paper2}>
-              <div
+              { /* <div
                 className={`${classes.paper2_item} ${classes.paper2_item_gap_down}`}
               >
                 <Typography variant="h5" className={classes.label2}>
                   Circulating:
                 </Typography>
                 <Typography variant="h5" className={classes.value2}>
-                  20,000,000 RVX
+                xxx rvx
                 </Typography>
-              </div>
+            </div>*/}
               <div className={classes.paper2_item}>
                 <Typography variant="h5" className={classes.label2}>
                   Total Supply:
@@ -688,7 +717,7 @@ const Staking = (props) => {
                     Currently Staking
                   </Typography>
                   <Typography variant="h3" className={classes.value3}>
-                    {Math.floor(pools[0].tokens[0].stakedBalance * 100000000)/100000000} RVX
+                    {Math.floor(pools[0].tokens[0].stakedBalance * 100000000) / 100000000} RVX
                   </Typography>
                 </div>
               </Grid>

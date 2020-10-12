@@ -1417,8 +1417,8 @@ class Store {
   _getRvxUsdValue = async (callback) => {
     console.log("GETTING DOLLAR VALUE");
     try {
-      let dollarvalue = await this.lookUpPrices(["rivex"]);
-      callback(null, dollarvalue["rivex"].usd)
+      let dollarvalue = await this.lookUpPrices(["rivex-erc20"]);
+      callback(null, dollarvalue["rivex-erc20"].usd)
     } catch (ex) {
       console.log(ex)
       return callback(ex)
