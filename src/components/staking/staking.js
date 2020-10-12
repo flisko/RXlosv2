@@ -639,6 +639,10 @@ const Staking = (props) => {
     return s;
   }
 
+  const calculateAPY = () =>{
+    
+  }
+
   return (
     <div className={classes.root}>
       <Header logo="staking" />
