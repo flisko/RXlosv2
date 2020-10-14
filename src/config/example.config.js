@@ -1,10 +1,10 @@
 const config = {
-  rvxaddress:"0x91d6f6e9026E43240ce6F06Af6a4b33129EBdE94", // mainnet
-  rRvxaddress:"0x6f7b10841eabd73ad226bbf653989539f1bff809", //   mainnet
-  losrewardsaddress:"0x0733d47e9fCa3161A443a0E16Dd8c94E0059Da28", //  mainnet
-  yrxaddress:"0x21634B64a6915b879aD13d96418a82b2a48Fcbe9", //mainnet
-  yrxpooloneaddress:"0x1A290f8C7786Cdd3bF2ebcD6D45d58c4B9df2788", //mainnet
-  yrxpooltwoaddress:"0xD620eeb5D41845C54ec1D27D97A0b456C6aE4bB6", //mainnet
+  rvxaddress:"0x5d921bD3676Be048A3EF7F6bB535d1993421DCA5",
+  rRvxaddress:"0xdeD5a34911F2a67e3cC2C56A437ec93045d35286", //0xdeD5a34911F2a67e3cC2C56A437ec93045d35286
+  losrewardsaddress:"0x0325D5aA13cd91239f2cfc4a37Baab4d02b563bb", //0x0325D5aA13cd91239f2cfc4a37Baab4d02b563bb
+  yrxaddress:"0x260aD5e6Eb9119006efd66052120481bC77E3046",
+  yrxpooloneaddress:"0x95C549d56F2d6C684aA32875E4Ca2CC35Cc39a6F",
+  yrxpooltwoaddress:"0x9bD58943ce4D86Fc6582e017AcF898b8a76B411d",
   yrxpoolthreeaddress:"0x134AE1977a2F90CA4073F4E98f4cD7E14b16A4F7",
   losrewardsabi:[
     {

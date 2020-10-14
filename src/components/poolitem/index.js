@@ -273,7 +273,75 @@ const PoolItem = (props) => {
         </div>
       </AccordionSummary>
       <AccordionDetails>
+        {pool.tokens[0].depositDisabled && (
+          <React.Fragment>
         <form className={classes.form} noValidate autoComplete="off">
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <Typography
+                variant="h5"
+                className={`${classes.rvxBalanceLabel1}`}
+              >
+                Balance <span style={{color:"white"}}>{Math.floor(pool.tokens[0].balance * 100000000) / 100000000} {pool.tokens[0].unit}</span> 
+              </Typography>
+              <TextField
+                className={classes.textbox1}
+                id={`txtDeposit_${pool.id}`}
+                label=""
+                variant="outlined"
+                placeholder="Deposit"
+                onChange={onChangeTextInputDeposit}
+                value={depositAmount ? depositAmount : ""}
+              />
+              <div className={classes.buttonPercentageContainer}>
+                <Button className={classes.buttonPercentage} onClick={() => onToggleDepositPercentage(pool.id, 25)}>25%</Button>
+                <Button className={classes.buttonPercentage} onClick={() => onToggleDepositPercentage(pool.id, 50)}>50%</Button>
+                <Button className={classes.buttonPercentage} onClick={() => onToggleDepositPercentage(pool.id, 75)}>75%</Button>
+                <Button className={classes.buttonPercentage} onClick={() => onToggleDepositPercentage(pool.id, 100)}>100%</Button>
+              </div>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Typography
+                variant="h5"
+                className={`${classes.yrxBalanceLabel1}`}
+              >
+                Rewards Available: <span style={{color:"white"}}>{Math.floor(pool.tokens[0].yrxBalance * 100000000) / 100000000} {pool.tokens[0].rewardsSymbol}</span>
+              </Typography>
+              <TextField
+                className={classes.textbox1}
+                id={`txtWithdraw_${pool.id}`}
+                label=""
+                variant="outlined"
+                placeholder="Withdraw"
+                onChange={onChangeTextInputWithdraw}
+                value={withdrawAmount ? withdrawAmount : ""}
+              />
+              <div className={classes.buttonPercentageContainer}>
+                <Button className={classes.buttonPercentage} onClick={() => onToggleWithdrawPercentage(pool.id, 25)}>25%</Button>
+                <Button className={classes.buttonPercentage} onClick={() => onToggleWithdrawPercentage(pool.id, 50)}>50%</Button>
+                <Button className={classes.buttonPercentage} onClick={() => onToggleWithdrawPercentage(pool.id, 75)}>75%</Button>
+                <Button className={classes.buttonPercentage} onClick={() => onToggleWithdrawPercentage(pool.id, 100)}>100%</Button>
+              </div>
+              <div className={classes.buttonWithdrawContainer}>
+                <Button
+                  variant="contained"
+                  disableElevation
+                  className={classes.buttonWithdraw}
+                  onClick={() =>
+                    onToggleConfirmationUnstakeAndWithdrawAlert(null, pool.id)
+                  }
+                >
+                  <Typography variant="h4">Unstake and Withdraw</Typography>
+                </Button>
+              </div>
+            </Grid>
+          </Grid>
+        </form>
+          </React.Fragment>
+        )}
+         {!pool.tokens[0].depositDisabled && (
+          <React.Fragment>
+          <form className={classes.form} noValidate autoComplete="off">
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <Typography
@@ -361,6 +429,10 @@ const PoolItem = (props) => {
             </Grid>
           </Grid>
         </form>
+       
+          </React.Fragment>
+         )}
+         
       </AccordionDetails>
     </Accordion>
   );
