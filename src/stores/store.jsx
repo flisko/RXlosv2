@@ -143,7 +143,7 @@ class Store {
             withdrawAll: true,
             lastMeasurement: 10774489,
             measurement: 1e18,
-            depositDisabled: false,
+            depositDisabled: true,
             poolNum: 2,
             exchange: "RVX/aUSDC",
             unit: "UNI-V2",
@@ -151,7 +151,7 @@ class Store {
 
         },
         {
-          id: 4,
+          id: 3,
           name: 'rRVX',
           symbol: 'ETH',
           description: 'First pool',
@@ -203,7 +203,7 @@ class Store {
             withdrawAll: true,
             lastMeasurement: 10774489,
             measurement: 1e18,
-            depositDisabled: true,
+            depositDisabled: false,
             poolNum: 2,
             exchange: "RVX/aUSDC",
             unit: "UNI-V2",
