@@ -92,9 +92,9 @@ class Store {
       poolAssets: [
         {
           id: 1,
-          name: 'rRVX - LEGACY',
+          name: 'rRVX-🛑(CLOSED)🛑',
           symbol: 'ETH',
-          description: 'First pool',
+          description: 'Closed Pool',
           vaultSymbol: 'yETH',
           tokens: [{
             erc20address: config.rRvxaddress,
@@ -122,9 +122,9 @@ class Store {
         },
         {
           id: 2,
-          name: 'RVX/USDT - LEGACY',
+          name: 'RVX/USDT-🛑(CLOSED)🛑 ',
           symbol: 'WETH',
-          description: 'Wrappeth Ether',
+          description: 'Closed Pool',
           vaultSymbol: 'yWETH',
           tokens: [{
             erc20address: "0xBd455F35BC5e531999B1C8fC72DF938767aA69b9",
@@ -154,7 +154,7 @@ class Store {
           id: 3,
           name: 'rRVX',
           symbol: 'ETH',
-          description: 'First pool',
+          description: 'Pool 1',
           vaultSymbol: 'yETH',
           tokens: [{
             erc20address: config.rRvxaddress,
@@ -184,7 +184,7 @@ class Store {
           id: 4,
           name: 'RVX/USDT',
           symbol: 'WETH',
-          description: 'Wrappeth Ether',
+          description: 'Pool 2',
           vaultSymbol: 'yWETH',
           tokens: [{
             erc20address: "0xBd455F35BC5e531999B1C8fC72DF938767aA69b9",
@@ -210,11 +210,11 @@ class Store {
           }]
 
         },
-       /* {
-          id: 3,
-          name: 'YRX/USDT 2/98',
-          symbol: 'YFI',
-          description: 'yearn.finance',
+       {
+          id: 5,
+          name: 'Balancer DAI/YRX 80/20',
+          symbol: 'BPT',
+          description: 'Pool 3',
           vaultSymbol: 'yYFI',
           tokens: [{
             erc20address: config.rRvxaddress,
@@ -238,7 +238,7 @@ class Store {
             unit: "BPT",
           }]
 
-        },*/
+        },
       ],
 
       rewardPools: [

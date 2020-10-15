@@ -43,7 +43,7 @@ const styles = (theme) => ({
   },
   accordionSummary: {},
   col1: {
-    flexBasis: "34%",
+    flexBasis: "35%",
     [theme.breakpoints.down("sm")]: {
       flexBasis: "100%",
     },
@@ -86,7 +86,7 @@ const styles = (theme) => ({
     color: colors.white,
   },
   col3: {
-    flexBasis: "34%",
+    flexBasis: "35%",
     textAlign: "right",
     [theme.breakpoints.down("sm")]: {
       display: "none",
@@ -228,7 +228,7 @@ const PoolItem = (props) => {
         <div className={classes.col1}>
           <div>
             <Typography variant="h4" className={`${classes.col1_label1}`}>
-              Pool {pool.poolNum}
+             {pool.description}
             </Typography>
           </div>
           <div>
