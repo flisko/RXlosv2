@@ -43,7 +43,7 @@ const styles = (theme) => ({
   },
   accordionSummary: {},
   col1: {
-    flexBasis: "34%",
+    flexBasis: "35%",
     [theme.breakpoints.down("sm")]: {
       flexBasis: "100%",
     },

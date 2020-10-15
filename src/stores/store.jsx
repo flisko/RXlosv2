@@ -92,7 +92,7 @@ class Store {
       poolAssets: [
         {
           id: 1,
-          name: 'rRVX - LEGACY',
+          name: 'rRVX-🛑(CLOSED)🛑',
           symbol: 'ETH',
           description: 'First pool',
           vaultSymbol: 'yETH',
@@ -122,7 +122,7 @@ class Store {
         },
         {
           id: 2,
-          name: 'RVX/USDT - LEGACY',
+          name: 'RVX/USDT-🛑(CLOSED)🛑 ',
           symbol: 'WETH',
           description: 'Wrappeth Ether',
           vaultSymbol: 'yWETH',
