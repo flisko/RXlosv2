@@ -94,7 +94,7 @@ class Store {
           id: 1,
           name: 'rRVX-🛑(CLOSED)🛑',
           symbol: 'ETH',
-          description: 'First pool',
+          description: 'Closed Pool',
           vaultSymbol: 'yETH',
           tokens: [{
             erc20address: config.rRvxaddress,
@@ -124,7 +124,7 @@ class Store {
           id: 2,
           name: 'RVX/USDT-🛑(CLOSED)🛑 ',
           symbol: 'WETH',
-          description: 'Wrappeth Ether',
+          description: 'Closed Pool',
           vaultSymbol: 'yWETH',
           tokens: [{
             erc20address: "0xBd455F35BC5e531999B1C8fC72DF938767aA69b9",
@@ -154,7 +154,7 @@ class Store {
           id: 3,
           name: 'rRVX',
           symbol: 'ETH',
-          description: 'First pool',
+          description: 'Pool 1',
           vaultSymbol: 'yETH',
           tokens: [{
             erc20address: config.rRvxaddress,
@@ -184,7 +184,7 @@ class Store {
           id: 4,
           name: 'RVX/USDT',
           symbol: 'USDT',
-          description: 'Wrappeth Ether',
+          description: 'Pool 2',
           vaultSymbol: 'yWETH',
           tokens: [{
             erc20address: "0xBd455F35BC5e531999B1C8fC72DF938767aA69b9",
@@ -214,7 +214,7 @@ class Store {
           id: 5,
           name: 'Balancer DAI/YRX 80/20',
           symbol: 'BPT',
-          description: 'Wrappeth Ether',
+          description: 'Pool 3',
           vaultSymbol: 'yWETH',
           tokens: [{
             erc20address: "0x50A6Af8D1B16e9fB18c912562239d65c0fF6724a",

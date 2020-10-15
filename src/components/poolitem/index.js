@@ -228,7 +228,7 @@ const PoolItem = (props) => {
         <div className={classes.col1}>
           <div>
             <Typography variant="h4" className={`${classes.col1_label1}`}>
-              Pool {pool.poolNum}
+              {pool.description}
             </Typography>
           </div>
           <div>
