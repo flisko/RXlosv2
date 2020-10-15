@@ -52,6 +52,10 @@ const styles = (theme) => ({
     color: colors.pink,
     marginBottom: "0.2em",
   },
+  col1_label5: {
+    color: colors.red,
+    marginBottom: "0.2em",
+  },
   col1_label2: {
     color: colors.white,
   },
@@ -227,9 +231,17 @@ const PoolItem = (props) => {
       >
         <div className={classes.col1}>
           <div>
-            <Typography variant="h4" className={`${classes.col1_label1}`}>
-              {pool.description}
-            </Typography>
+            {pool.description == "Closed Pool" && (
+               <Typography variant="h4" className={`${classes.col1_label5}`}>
+               {pool.description}
+             </Typography>
+            )} 
+
+            {pool.description != "Closed Pool" && (
+               <Typography variant="h4" className={`${classes.col1_label1}`}>
+               {pool.description}
+             </Typography>
+            )} 
           </div>
           <div>
             <Typography variant="h3" className={`${classes.col1_label2}`}>
