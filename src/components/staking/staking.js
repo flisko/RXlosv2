@@ -728,7 +728,7 @@ const Staking = (props) => {
               <Grid item xs={12} sm={4}>
                 <div className={classes.paper4}>
                   <div className={classes.paper4Inner}>
-                    <Button
+                   {/* <Button
                       className={classes.buttonStake}
                       onClick={onToggleStakeDialog}
                     >
@@ -745,6 +745,7 @@ const Staking = (props) => {
                         Unstake
                       </Typography>
                     </Button>
+                   */}
                   </div>
                 </div>
               </Grid>
@@ -782,19 +783,19 @@ const Staking = (props) => {
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <div className={classes.paper5}>
-                  <Button
+                  {/*<Button
                     variant="contained"
                     disableElevation
                     className={classes.buttonClaim}
                     onClick={onToggleConfirmationClaimAlert}
                   >
                     <Typography variant="h3">Claim Rewards</Typography>
-                  </Button>
+                  </Button> */}
                 </div>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <div className={classes.paper5}>
-                  <Button
+                  {/*<Button
                     variant="contained"
                     disableElevation
                     className={classes.buttonExit}
@@ -803,7 +804,7 @@ const Staking = (props) => {
                     <Typography variant="h3">
                       Exit: Claim and Unstake All
                     </Typography>
-                  </Button>
+                  </Button>*/}
                 </div>
               </Grid>
             </Grid>

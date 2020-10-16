@@ -110,6 +110,7 @@ class Store {
             depositAll: false,
             withdraw: true,
             withdrawAll: true,
+            claimEnabled: true,
             stakedBalance: 0,
             lastMeasurement: 10774489,
             measurement: 1e18,
@@ -143,6 +144,7 @@ class Store {
             withdrawAll: true,
             lastMeasurement: 10774489,
             measurement: 1e18,
+            exitEnabled:true,
             depositDisabled: true,
             poolNum: 2,
             exchange: "RVX/aUSDC",
@@ -170,10 +172,11 @@ class Store {
             depositAll: false,
             withdraw: true,
             withdrawAll: true,
+            disableAll:true,
             stakedBalance: 0,
             lastMeasurement: 10774489,
             measurement: 1e18,
-            depositDisabled: false,
+            depositDisabled: true,
             poolNum: 1,
             exchange: "rRVX",
             unit: "rRVX",
@@ -622,6 +625,7 @@ class Store {
 
     try {
       var totalstaked = await erc20Contract.methods.totalSupply().call({ from: account.address });
+      console.log(asset.rewardsAddress)
       console.log("total staked" + totalstaked);
       totalstaked = parseFloat(totalstaked) / 10 ** asset.decimals
       callback(null, parseFloat(totalstaked))
