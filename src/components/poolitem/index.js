@@ -266,11 +266,16 @@ const PoolItem = (props) => {
              Staked Balance
             </Typography>
           </div>
-          <div>
+          {pool.description != "Closed Pool" && (
+               <Typography variant="h4" className={`${classes.col1_label5}`}>
+              <div>
             <Typography variant="h3" className={`${classes.col3_label2}`}>
               {Math.floor(pool.tokens[0].stakedBalance*100000000)/100000000} {pool.tokens[0].unit}
             </Typography>
           </div>
+             </Typography>
+            )} 
+        
         </div>
         <div className={classes.col3}>
           <div>
@@ -294,12 +299,17 @@ const PoolItem = (props) => {
 <form className={classes.form} noValidate autoComplete="off">
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
-              <Typography
-                variant="h5"
-                className={`${classes.rvxBalanceLabel1}`}
-              >
-                Balance <span style={{color:"white"}}>{Math.floor(pool.tokens[0].balance * 100000000) / 100000000} {pool.tokens[0].unit}</span> 
-              </Typography>
+            <Typography
+                 variant="h5"
+                 className={`${classes.rvxBalanceLabel1}`}
+               >
+                 Balance
+                 {pool.description != "Closed Pool" && (
+                <span style={{color:"white"}}>{Math.floor(pool.tokens[0].balance * 100000000) / 100000000} {pool.tokens[0].unit}</span> 
+                )}  
+               </Typography>
+         
+            
               <TextField
                 className={classes.textbox1}
                 id={`txtDeposit_${pool.id}`}

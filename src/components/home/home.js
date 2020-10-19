@@ -146,7 +146,7 @@ const Home = props => {
 
   return (
     <div className={classes.root}>
-     {/*<Card
+     {<Card
         className={`${classes.card} ${classes.staking}`}
         component={Link} to="staking"       
       >
@@ -154,7 +154,7 @@ const Home = props => {
         <Typography variant={"h4"} className={`${classes.description} description`}>
           {"Earn your share of RVX from rewards pool by staking RVX"}
         </Typography>
-     </Card>*/} 
+     </Card>} 
       <Card
         className={`${classes.card} ${classes.farming}`}
         component={Link} to="farming"    
