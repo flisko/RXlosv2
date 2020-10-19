@@ -254,6 +254,7 @@ const PoolItem = (props) => {
             </Typography>
           </div>
           <div>
+
             <Typography variant="h5" className={`${classes.col1_label4}`}>
               {Math.floor(pool.tokens[0].balance * 100000000) / 100000000} {pool.unit}
             </Typography>
@@ -278,9 +279,12 @@ const PoolItem = (props) => {
             </Typography>
           </div>
           <div>
-            <Typography variant="h3" className={`${classes.col3_label2}`}>
-              {Math.floor(pool.tokens[0].balance * 100000000) / 100000000} {pool.tokens[0].unit}
-            </Typography>
+          {pool.description != "Closed Pool" && (
+                <Typography variant="h3" className={`${classes.col3_label2}`}>
+                {Math.floor(pool.tokens[0].balance * 100000000) / 100000000} {pool.tokens[0].unit}
+              </Typography>
+            )} 
+          
           </div>
         </div>
       </AccordionSummary>

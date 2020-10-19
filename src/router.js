@@ -18,7 +18,7 @@ const Routes = (props) => {
     <IpfsRouter basename="/">
       <Switch>
         <Route exact path="/" component={Home} />
-        {<Route exact path="/staking" component={Staking} />}
+        {/*<Route exact path="/staking" component={Staking} />*/}
         <Route exact path="/farming" component={Farming} />
       </Switch>
     </IpfsRouter>
