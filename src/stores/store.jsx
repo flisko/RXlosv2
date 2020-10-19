@@ -156,7 +156,7 @@ class Store {
           id: 3,
           name: 'RVX',
           symbol: 'ETH',
-          description: 'Pool 1',
+          description: 'Closed Pool',
           vaultSymbol: 'yETH',
           tokens: [{
             erc20address: config.rvxaddress,
@@ -176,7 +176,7 @@ class Store {
             stakedBalance: 0,
             lastMeasurement: 10774489,
             measurement: 1e18,
-            depositDisabled: false,
+            depositDisabled: true,
             poolNum: 1,
             exchange: "RVX",
             unit: "RVX",
