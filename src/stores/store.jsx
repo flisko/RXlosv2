@@ -637,11 +637,6 @@ class Store {
   exit = (payload) => {
     const account = store.getStore('account')
     const { asset } = payload.content
-    this._checkApprovalrRvx(asset, account, asset.rRvxbalance, asset.rewardsAddress, (err) => {
-      if (err) {
-        return emitter.emit(ERROR, err);
-      }
-
       this._callExit(asset, account, (err, res) => {
         if (err) {
           return emitter.emit(ERROR, err);
@@ -649,7 +644,6 @@ class Store {
         dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
         // return emitter.emit(EXIT_RETURNED, res)
       })
-    })
 
   }
   exitfarm = (payload) => {
@@ -763,10 +757,6 @@ class Store {
     console.log(asset);
     console.log(account);
     console.log(amount);
-    this._checkApprovalrRvx(asset, account, amount, asset.rewardsAddress, (err) => {
-      if (err) {
-        return emitter.emit(ERROR, err);
-      }
 
       this._callWithdraw(asset, account, amount, (err, res) => {
         if (err) {
@@ -775,7 +765,6 @@ class Store {
         dispatcher.dispatch({ type: GET_BALANCES_PERPETUAL, content: {} })
         return emitter.emit(STAKE_RETURNED, res)
       })
-    })
   }
 
   withdrawfarm = (payload) => {
