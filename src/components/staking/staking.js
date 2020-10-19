@@ -472,7 +472,7 @@ const Staking = (props) => {
     const pool = store.getStore("rewardPools");
     console.log("onToggleConfirmationWithdrawAlert", opt);
     if (isOpenConfirmationWithdrawAlert) {
-      let tokenbalance = new bigDecimal(pool[0].tokens[0].rRvxbalance.toString())
+      let tokenbalance = new bigDecimal(pool[0].tokens[0].stakedBalance.toString())
       let withdrawamount = new bigDecimal(withdrawAmount.toString())
       setIsOpenConfirmationWithdrawAlert(false);
       if (opt === "yes") {
@@ -617,7 +617,7 @@ const Staking = (props) => {
   const onToggleWithdrawPercentage = (percentage) => {
     console.log("onToggleWithdrawPercentage", percentage);
 
-    let bigAmount = new bigDecimal(pools[0].tokens[0].rRvxbalance);
+    let bigAmount = new bigDecimal(pools[0].tokens[0].stakedBalance);
     let bigPercentage = new bigDecimal(percentage);
     let big100 = new bigDecimal("100");
     let new_amount = bigAmount
@@ -758,14 +758,14 @@ const Staking = (props) => {
           <Grid item xs={12}>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
-                <div className={classes.paper7}>
+               {/*<div className={classes.paper7}>
                   <Typography variant="h4" className={classes.rewardsText}>
                     RVX Balance
                   </Typography>
                   <Typography variant="h4" className={classes.rewardsValueText}>
                     {Math.floor(pools[0].tokens[0].rRvxbalance * 100000000) / 100000000}
                   </Typography>
-                </div>
+          </div>*/} 
               </Grid>
               <Grid item xs={12} sm={6}>
                 <div className={classes.paper6}>

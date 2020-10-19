@@ -154,12 +154,12 @@ class Store {
         },
         {
           id: 3,
-          name: 'rRVX',
+          name: 'RVX',
           symbol: 'ETH',
           description: 'Pool 1',
           vaultSymbol: 'yETH',
           tokens: [{
-            erc20address: config.rRvxaddress,
+            erc20address: config.rvxaddress,
             rewardsAddress: config.yrxpooloneaddress,
             rewardsABI: config.yrxpoolabi,
             rewardsSymbol: 'YRX',
@@ -172,14 +172,14 @@ class Store {
             depositAll: false,
             withdraw: true,
             withdrawAll: true,
-            disableAll:true,
+            disableAll:false,
             stakedBalance: 0,
             lastMeasurement: 10774489,
             measurement: 1e18,
-            depositDisabled: true,
+            depositDisabled: false,
             poolNum: 1,
-            exchange: "rRVX",
-            unit: "rRVX",
+            exchange: "RVX",
+            unit: "RVX",
           }]
 
         },
