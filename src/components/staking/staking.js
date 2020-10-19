@@ -705,7 +705,7 @@ const Staking = (props) => {
                     variant="h3"
                     className={`${classes.label3} ${classes.label3_gap_down}`}
                   >
-                    Balance not staked yet
+                    Unstaked Balance
                   </Typography>
                   <Typography variant="h3" className={classes.value3}>
                     {Math.floor(pools[0].tokens[0].balance * 100000000) / 100000000} RVX
@@ -728,7 +728,7 @@ const Staking = (props) => {
               <Grid item xs={12} sm={4}>
                 <div className={classes.paper4}>
                   <div className={classes.paper4Inner}>
-                   {/* <Button
+                   <Button
                       className={classes.buttonStake}
                       onClick={onToggleStakeDialog}
                     >
@@ -745,7 +745,7 @@ const Staking = (props) => {
                         Unstake
                       </Typography>
                     </Button>
-                   */}
+                   
                   </div>
                 </div>
               </Grid>
@@ -760,10 +760,10 @@ const Staking = (props) => {
               <Grid item xs={12} sm={6}>
                 <div className={classes.paper7}>
                   <Typography variant="h4" className={classes.rewardsText}>
-                    rRvx Balance
+                    RVX Balance
                   </Typography>
                   <Typography variant="h4" className={classes.rewardsValueText}>
-                    {Math.floor(pools[0].tokens[0].rRvxbalance * 100000000) / 100000000}  rRVX (Staked in YRX pool1: {farmingpool[0].tokens[0].stakedBalance} rRVX )
+                    {Math.floor(pools[0].tokens[0].rRvxbalance * 100000000) / 100000000}
                   </Typography>
                 </div>
               </Grid>
@@ -783,19 +783,19 @@ const Staking = (props) => {
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <div className={classes.paper5}>
-                  {/*<Button
+                  {<Button
                     variant="contained"
                     disableElevation
                     className={classes.buttonClaim}
                     onClick={onToggleConfirmationClaimAlert}
                   >
                     <Typography variant="h3">Claim Rewards</Typography>
-                  </Button> */}
+                  </Button> }
                 </div>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <div className={classes.paper5}>
-                  {/*<Button
+                  {<Button
                     variant="contained"
                     disableElevation
                     className={classes.buttonExit}
@@ -804,7 +804,7 @@ const Staking = (props) => {
                     <Typography variant="h3">
                       Exit: Claim and Unstake All
                     </Typography>
-                  </Button>*/}
+                  </Button>}
                 </div>
               </Grid>
             </Grid>
