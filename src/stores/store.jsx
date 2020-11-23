@@ -156,7 +156,7 @@ class Store {
           id: 3,
           name: 'RVX/USDT -🛑(CLOSED)🛑 ',
           symbol: 'USDT',
-          description: 'Pool 2',
+          description: 'Closed Pool',
           vaultSymbol: 'yWETH',
           tokens: [{
             erc20address: "0xBd455F35BC5e531999B1C8fC72DF938767aA69b9",
