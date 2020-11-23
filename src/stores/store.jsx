@@ -214,9 +214,39 @@ class Store {
           }]
 
         },
-       
         {
           id: 5,
+          name: 'RVX/USDT',
+          symbol: 'USDT',
+          description: 'Pool 2',
+          vaultSymbol: 'yWETH',
+          tokens: [{
+            erc20address: "0xBd455F35BC5e531999B1C8fC72DF938767aA69b9",
+            rewardsAddress: config.yrxpoolfouraddress,
+            rewardsABI: config.yrxpoolabi,
+            rewardsSymbol: 'YRX',
+            yrxaddress: config.yrxaddress,
+            balance: 0,
+            yrxBalance: 0,
+            vaultBalance: 0,
+            stakedBalance: 0,
+            decimals: 18,
+            deposit: true,
+            depositAll: true,
+            withdraw: true,
+            withdrawAll: true,
+            lastMeasurement: 10774489,
+            measurement: 1e18,
+            depositDisabled: false,
+            poolNum: 2,
+            exchange: "RVX/aUSDC",
+            unit: "UNI-V2",
+          }]
+
+        },
+       
+        {
+          id: 6,
           name: 'Balancer DAI/YRX 80/20',
           symbol: 'BPT',
           description: 'Pool 3',
@@ -245,36 +275,7 @@ class Store {
           }]
 
         },
-        {
-          id: 6,
-          name: 'RVX/USDT',
-          symbol: 'USDT',
-          description: 'Pool 4',
-          vaultSymbol: 'yWETH',
-          tokens: [{
-            erc20address: "0xBd455F35BC5e531999B1C8fC72DF938767aA69b9",
-            rewardsAddress: config.yrxpoolfouraddress,
-            rewardsABI: config.yrxpoolabi,
-            rewardsSymbol: 'YRX',
-            yrxaddress: config.yrxaddress,
-            balance: 0,
-            yrxBalance: 0,
-            vaultBalance: 0,
-            stakedBalance: 0,
-            decimals: 18,
-            deposit: true,
-            depositAll: true,
-            withdraw: true,
-            withdrawAll: true,
-            lastMeasurement: 10774489,
-            measurement: 1e18,
-            depositDisabled: false,
-            poolNum: 2,
-            exchange: "RVX/aUSDC",
-            unit: "UNI-V2",
-          }]
-
-        },
+     
        /* {
           id: 3,
           name: 'YRX/USDT 2/98',
