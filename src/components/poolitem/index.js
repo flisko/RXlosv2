@@ -266,15 +266,14 @@ const PoolItem = (props) => {
              Staked Balance
             </Typography>
           </div>
-          {pool.description != "Closed Pool" && (
-               <Typography variant="h4" className={`${classes.col1_label5}`}>
+          <Typography variant="h4" className={`${classes.col1_label5}`}>
               <div>
             <Typography variant="h3" className={`${classes.col3_label2}`}>
               {Math.floor(pool.tokens[0].stakedBalance*100000000)/100000000} {pool.tokens[0].unit}
             </Typography>
           </div>
              </Typography>
-            )} 
+        
         
         </div>
         <div className={classes.col3}>

@@ -183,11 +183,43 @@ class Store {
           }]
 
         },
+          
         {
           id: 4,
-          name: 'RVX',
+          name: 'Balancer -🛑(CLOSED)🛑 ',
+          symbol: 'BPT',
+          description: 'Closed Pool',
+          vaultSymbol: 'yWETH',
+          tokens: [{
+            erc20address: "0x50A6Af8D1B16e9fB18c912562239d65c0fF6724a",
+            rewardsAddress: config.yrxpoolthreeaddress,
+            rewardsABI: config.yrxpoolabi,
+            rewardsSymbol: 'YRX',
+            yrxaddress: config.yrxaddress,
+            balance: 0,
+            yrxBalance: 0,
+            vaultBalance: 0,
+            stakedBalance: 0,
+            decimals: 18,
+            deposit: true,
+            depositAll: true,
+            withdraw: true,
+            withdrawAll: true,
+            lastMeasurement: 10774489,
+            measurement: 1e18,
+            exitEnabled:true,
+            depositDisabled: true,
+            poolNum: 2,
+            exchange: "RVX/aUSDC",
+            unit: "BPT",
+          }]
+
+        },
+        {
+          id: 5,
+          name: 'RVX -🛑(CLOSED)🛑 ',
           symbol: 'ETH',
-          description: 'Pool 1',
+          description: 'Closed Pool',
           vaultSymbol: 'yETH',
           tokens: [{
             erc20address: config.rvxaddress,
@@ -207,7 +239,8 @@ class Store {
             stakedBalance: 0,
             lastMeasurement: 10774489,
             measurement: 1e18,
-            depositDisabled: false,
+            exitEnabled:true,
+            depositDisabled: true,
             poolNum: 1,
             exchange: "RVX",
             unit: "RVX",
@@ -215,7 +248,7 @@ class Store {
 
         },
         {
-          id: 5,
+          id: 6,
           name: 'RVX/USDT',
           symbol: 'USDT',
           description: 'Pool 2',
@@ -244,16 +277,16 @@ class Store {
           }]
 
         },
-       
+     
         {
-          id: 6,
-          name: 'Balancer DAI/YRX 80/20',
-          symbol: 'BPT',
+          id: 7,
+          name: 'YRX/ETH',
+          symbol: 'UNI',
           description: 'Pool 3',
           vaultSymbol: 'yWETH',
           tokens: [{
-            erc20address: "0x50A6Af8D1B16e9fB18c912562239d65c0fF6724a",
-            rewardsAddress: config.yrxpoolthreeaddress,
+            erc20address: "0xa690de6fbba99547c96ac06767217a022e1e5cf8",
+            rewardsAddress: config.yrxpoolfiveaddress,
             rewardsABI: config.yrxpoolabi,
             rewardsSymbol: 'YRX',
             yrxaddress: config.yrxaddress,
@@ -271,7 +304,7 @@ class Store {
             depositDisabled: false,
             poolNum: 2,
             exchange: "RVX/aUSDC",
-            unit: "BPT",
+            unit: "UNI-V2",
           }]
 
         },
