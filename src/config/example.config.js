@@ -9,6 +9,7 @@ const config = {
   yrxpooltwoaddress:"0x7c4C4c5ef2396854A5885358868F12E0bE5EDDfe", //mainnet 0x7c4C4c5ef2396854A5885358868F12E0bE5EDDfe
   yrxpoolthreeaddress:"0x07b33c29960C005889B5F3746667a0AA7D260166", //mainnet 0x07b33c29960C005889B5F3746667a0AA7D260166
   yrxpoolfouraddress:"0xC9Ca969d25441E1efF73cA71c11F565e83d35726",
+  yrxpoolfiveaddress:"0x3d8E9CfBf8dAC92784255b6363E30B5982A40d89",
   losrewardsabi:[
     {
       "anonymous": false,
