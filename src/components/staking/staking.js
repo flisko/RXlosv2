@@ -1,43 +1,39 @@
 import React, { useState, useEffect } from "react";
-import { useHistory, useLocation } from "react-router-dom";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { useHistory, useLocation, Link } from "react-router-dom";
+import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
 import Divider from "@material-ui/core/Divider";
-import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
-import Fade from "@material-ui/core/Fade";
 import StakeDialog from "../dialogs/stake";
 import UnstakeDialog from "../dialogs/unstake";
-import ClaimRewardsDialog from "../dialogs/claimrewards";
-import UnstakeAllDialog from "../dialogs/unstakeall";
 import CircularProgress from "@material-ui/core/CircularProgress";
-
 import ConfirmationClaimAlert from "../alerts/confirmation";
 import ConfirmationClaimAndUnstakeAllAlert from "../alerts/confirmation";
 import ConfirmationDepositAlert from "../alerts/confirmation";
 import ConfirmationWithdrawAlert from "../alerts/confirmation";
-
+import ArchiveSharpIcon from "@material-ui/icons/ArchiveSharp";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import bigDecimal from "js-big-decimal";
-import { injected } from "../../stores/connectors";
 import Header from "../header";
 import { colors } from "../../theme";
 import Store from "../../stores";
+import moment from "moment";
 import {
-  CONNECTION_CONNECTED, CONNECTION_DISCONNECTED,
+  CONNECTION_CONNECTED,
+  CONNECTION_DISCONNECTED,
   STAKE,
-  STAKE_RETURNED, GET_BALANCES_PERPETUAL, GET_BALANCES_PERPETUAL_RETURNED, CONFIGURE, WITHDRAW, GET_REWARDS, EXIT
+  GET_BALANCES_PERPETUAL_RETURNED,
+  CONFIGURE,
+  WITHDRAW,
+  GET_REWARDS,
+  GET_REWARDSV3,
+  EXIT,
+  EXITOLD
 } from "../../constants";
 import RXBackgroundImage2 from "../../assets/png/RX_background2_2000.png";
 var ranges = [
@@ -75,6 +71,11 @@ const styles = (theme) => ({
     backgroundColor: colors.bgColor4,
     paddingTop: "2em",
     paddingBottom: "2em",
+  },
+  buttonBack: {
+    backgroundColor: "transparent",
+    color: "#06C4DE",
+    border: "2px solid rgb(6 196 222 / 1)",
   },
   container2_gap_down: {
     marginBottom: "2em",
@@ -205,7 +206,7 @@ const styles = (theme) => ({
     color: colors.white,
   },
   buttonStake: {
-    color: colors.textColor1
+    color: colors.textColor1,
   },
   // stakingDividerContainer: {
   //   width: "50%",
@@ -263,30 +264,21 @@ const styles = (theme) => ({
   },
 });
 
-
-
 const Staking = (props) => {
   //const classes = useStyles();
   const { classes } = props;
-  const location = useLocation();
-  const history = useHistory();
   const [isStakeDialogOpen, setIsStakeDialogOpen] = useState(false);
   const [isUnstakeDialogOpen, setIsUnstakeDialogOpen] = useState(false);
-  const [isClaimRewardsDialogOpen, setIsClaimRewardsDialogOpen] = useState(
-    false
-  );
-  const [isUnstakeAllDialogOpen, setIsUnstakeAllDialogOpen] = useState(false);
-  const [openExitClaimModal, setOpenExitClaimModal] = useState(false);
   const [pools, setPools] = useState(store.getStore("rewardPools"));
-  const [farmingpool, setFarmingPool] = useState(store.getStore("poolAssets"));
-  const [address, setAddress] = useState("");
-  const [account, setAccount] = useState('');
+  const [, setFarmingPool] = useState(store.getStore("poolAssets"));
+  const [, setAddress] = useState("");
+  const [, setAccount] = useState("");
   let isconfigured = false;
-  const [rewardPool, setRewardPool] = useState({});
-  const [depositAmount, setDepositAmount] = useState('');
-  const [withdrawAmount, setWithdrawAmount] = useState('');
+  const [depositAmount, setDepositAmount] = useState("");
+  const [withdrawAmount, setWithdrawAmount] = useState("");
   const [openMessage, setOpenMessage] = useState(false);
   const [message, setMessage] = useState(false);
+  const [oldLos, setOldLos] = useState(false);
 
   const [
     isConfirmationClaimAlertOpen,
@@ -297,8 +289,14 @@ const Staking = (props) => {
     setIsConfirmationClaimAndUnstakeAllAlertOpen,
   ] = useState(false);
 
-  const [isOpenConfirmationDepositAlert, setIsOpenConfirmationDepositAlert] = useState(false);
-  const [isOpenConfirmationWithdrawAlert, setIsOpenConfirmationWithdrawAlert] = useState(false);
+  const [
+    isOpenConfirmationDepositAlert,
+    setIsOpenConfirmationDepositAlert,
+  ] = useState(false);
+  const [
+    isOpenConfirmationWithdrawAlert,
+    setIsOpenConfirmationWithdrawAlert,
+  ] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -310,15 +308,18 @@ const Staking = (props) => {
       pools.map((pool) => {
         console.log("id", pool.id);
       });
-    }
+    };
 
     bootstrapAsync();
 
     return function cleanup() {
-      console.log('cleanup here in staking.js');
+      console.log("cleanup here in staking.js");
       emitter.removeListener(CONNECTION_CONNECTED, connectionConnected);
       emitter.removeListener(CONNECTION_DISCONNECTED, connectionDisconnected);
-      emitter.removeListener(GET_BALANCES_PERPETUAL_RETURNED, connectionDisconnected);
+      emitter.removeListener(
+        GET_BALANCES_PERPETUAL_RETURNED,
+        connectionDisconnected
+      );
     };
   }, []);
 
@@ -326,11 +327,10 @@ const Staking = (props) => {
     console.log("balances returned");
     let rewardPools = store.getStore("rewardPools");
     let poolAssets = store.getStore("poolAssets");
-    console.log(rewardPools)
-    setPools(rewardPools)
-    setFarmingPool(poolAssets)
-
-  }
+    console.log(rewardPools);
+    setPools(rewardPools);
+    setFarmingPool(poolAssets);
+  };
 
   const formatNumber = (n) => {
     for (var i = 0; i < ranges.length; i++) {
@@ -340,6 +340,24 @@ const Staking = (props) => {
     }
     return n.toString();
   };
+
+  const getDates = (date) => {
+    var depositDate = moment.unix(date);
+    var withdrawalDate = depositDate.add(93,"days"); //add 3 month
+    return withdrawalDate.format("dddd, MMMM Do YYYY, h:mm:ss a");
+  };
+
+  const allowClaim = date =>{
+    var depositDate = moment.unix(date);
+    var withdrawalDate = depositDate.add(93,"days"); //add 3 month
+    var now = new moment(moment.now())
+    console.log(withdrawalDate.format("dddd, MMMM Do YYYY, h:mm:ss a"));
+    console.log(now.format("dddd, MMMM Do YYYY, h:mm:ss a"));
+    if(now.isAfter(withdrawalDate)){
+      return true;
+    } else return false;
+  }
+
 
 
   const onToggleStakeDialog = () => {
@@ -351,6 +369,14 @@ const Staking = (props) => {
     }
   };
 
+  const onToggleOldLos = () => {
+    if (oldLos) {
+      setOldLos(false);
+    } else {
+      setOldLos(true);
+    }
+  };
+
   const connectionConnected = () => {
     console.log("connectionConnected");
 
@@ -359,17 +385,16 @@ const Staking = (props) => {
     console.log(isconfigured);
     if (!isconfigured) {
       isconfigured = true;
-      dispatcher.dispatch({ type: CONFIGURE, content: {} })
-
+      dispatcher.dispatch({ type: CONFIGURE, content: {} });
     }
     setAccount(account);
     setAddress(
       account.address.substring(0, 6) +
-      "..." +
-      account.address.substring(
-        account.address.length - 4,
-        account.address.length
-      )
+        "..." +
+        account.address.substring(
+          account.address.length - 4,
+          account.address.length
+        )
     );
   };
   /* const rewardPoolSet = () => {
@@ -409,16 +434,16 @@ const Staking = (props) => {
 
   const connectionDisconnected = () => {
     console.log("connectionDisconnected");
-    setAccount('');
-    setAddress('');
+    setAccount("");
+    setAddress("");
   };
 
   const onToggleConfirmationDepositAlert = (opt) => {
     const pool = store.getStore("rewardPools");
     console.log("onToggleDepositConfirmationAlert", opt);
     if (isOpenConfirmationDepositAlert) {
-      let tokenbalance = new bigDecimal(pool[0].tokens[0].balance.toString())
-      let depositamount = new bigDecimal(depositAmount.toString())
+      let tokenbalance = new bigDecimal(pool[0].tokens[0].balance.toString());
+      let depositamount = new bigDecimal(depositAmount.toString());
       setIsOpenConfirmationDepositAlert(false);
       if (opt === "yes") {
         if (typeof depositAmount === "undefined") {
@@ -453,8 +478,11 @@ const Staking = (props) => {
 
         onToggleStakeDialog();
         console.log("proceed to stake");
-        console.log(pool[0])
-        dispatcher.dispatch({ type: STAKE, content: { asset: pool[0].tokens[0], amount: depositAmount } })
+        console.log(pool[1]);
+        dispatcher.dispatch({
+          type: STAKE,
+          content: { asset: pool[1].tokens[0], amount: depositAmount },
+        });
         // deposit logic here
 
         setIsLoading(true);
@@ -472,8 +500,10 @@ const Staking = (props) => {
     const pool = store.getStore("rewardPools");
     console.log("onToggleConfirmationWithdrawAlert", opt);
     if (isOpenConfirmationWithdrawAlert) {
-      let tokenbalance = new bigDecimal(pool[0].tokens[0].stakedBalance.toString())
-      let withdrawamount = new bigDecimal(withdrawAmount.toString())
+      let tokenbalance = new bigDecimal(
+        pool[0].tokens[0].stakedBalance.toString()
+      );
+      let withdrawamount = new bigDecimal(withdrawAmount.toString());
       setIsOpenConfirmationWithdrawAlert(false);
       if (opt === "yes") {
         if (typeof withdrawAmount === "undefined") {
@@ -508,10 +538,12 @@ const Staking = (props) => {
 
         onToggleUnstakeDialog();
         console.log("proceed to unstake");
-        console.log(pool[0])
-        dispatcher.dispatch({ type: WITHDRAW, content: { asset: pool[0].tokens[0], amount: withdrawAmount } })
+        console.log(pool[0]);
+        dispatcher.dispatch({
+          type: WITHDRAW,
+          content: { asset: pool[0].tokens[0], amount: withdrawAmount },
+        });
         // deposit logic here
-
 
         setIsLoading(true);
         setTimeout(() => {
@@ -547,7 +579,16 @@ const Staking = (props) => {
       setIsConfirmationClaimAlertOpen(false);
       if (opt === "yes") {
         console.log("proceed to claim rewards");
-        dispatcher.dispatch({ type: GET_REWARDS, content: { asset: pool[0].tokens[0] } })
+        let test = allowClaim(pools[1].tokens[0].timeStaked);
+        if(!test){
+          setMessage("Can't claim rewards yet");
+          setOpenMessage(true);
+          return;
+        }
+        dispatcher.dispatch({
+          type: GET_REWARDSV3,
+          content: { asset: pool[1].tokens[0] },
+        });
         // claim rewards logic here
 
         setIsLoading(true);
@@ -566,7 +607,15 @@ const Staking = (props) => {
       setIsConfirmationClaimAndUnstakeAllAlertOpen(false);
       if (opt === "yes") {
         console.log("proceed to exit and claim all rewards");
-        dispatcher.dispatch({ type: EXIT, content: { asset: pool[0].tokens[0] } })
+        if(oldLos){
+          dispatcher.dispatch({
+            type: EXITOLD,
+            content: { asset: pool[0].tokens[0] },
+          });
+        } else {
+
+        }
+        
         // claim all rewards logic here
 
         setIsLoading(true);
@@ -576,14 +625,6 @@ const Staking = (props) => {
       }
     } else {
       setIsConfirmationClaimAndUnstakeAllAlertOpen(true);
-    }
-  };
-
-  const onToggleLoading = () => {
-    if (isLoading) {
-      setIsLoading(false);
-    } else {
-      setIsLoading(true);
     }
   };
 
@@ -600,9 +641,7 @@ const Staking = (props) => {
     let bigAmount = new bigDecimal(pools[0].tokens[0].balance);
     let bigPercentage = new bigDecimal(percentage);
     let big100 = new bigDecimal("100");
-    let new_amount = bigAmount
-      .multiply(bigPercentage)
-      .divide(big100, 18)
+    let new_amount = bigAmount.multiply(bigPercentage).divide(big100, 18);
 
     setDepositAmount(new_amount.getValue());
   };
@@ -620,15 +659,15 @@ const Staking = (props) => {
     let bigAmount = new bigDecimal(pools[0].tokens[0].stakedBalance);
     let bigPercentage = new bigDecimal(percentage);
     let big100 = new bigDecimal("100");
-    let new_amount = bigAmount
-      .multiply(bigPercentage)
-      .divide(big100, 18)
+    let new_amount = bigAmount.multiply(bigPercentage).divide(big100, 18);
 
     setWithdrawAmount(new_amount.getValue());
   };
 
   const prettyTVL = () => {
-    let num = parseFloat(pools[0].tokens[0].rvxpriceusd *  pools[0].tokens[0].totalRVXstaked);
+    let num = parseFloat(
+      pools[0].tokens[0].rvxpriceusd * pools[0].tokens[0].totalRVXstaked
+    );
     num = num.toString().slice(0, 12);
     num = Number(num).toFixed(2);
     var s = formatNumber(num);
@@ -637,180 +676,406 @@ const Staking = (props) => {
     s = s.slice(0, x + 2);
     s = s + lastchar;
     return s;
-  }
+  };
 
-  const calculateAPY = () =>{
-    
-  }
+  const prettyTotalStaked = () => {
+    let num = parseFloat(
+      pools[1].tokens[0].totalStaked
+    );
+    num = num.toString().slice(0, 12);
+    console.log(num)
+    num = Number(num).toFixed(2);
+    console.log(num)
+    var s = formatNumber(num);
+    console.log(s)
+    return s;
+  };
 
   return (
     <div className={classes.root}>
       <Header logo="staking" />
-      <Container maxWidth="md" className={classes.container1}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={4}>
-            <Paper className={classes.paper}>
-              <Typography variant="h6" className={classes.label1}>
-                Total Value Locked (USD)
-              </Typography>
-              <Typography variant="h3" className={classes.value1}>
-                {prettyTVL()}  $
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Paper className={classes.paper}>
-              <Typography variant="h6" className={classes.label1}>
-                RVX Price
-              </Typography>
-              <Typography variant="h3" className={classes.value1}>
-                {pools[0].tokens[0].rvxpriceusd}   $
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Paper className={classes.paper2}>
-              { /* <div
-                className={`${classes.paper2_item} ${classes.paper2_item_gap_down}`}
-              >
-                <Typography variant="h5" className={classes.label2}>
-                  Circulating:
-                </Typography>
-                <Typography variant="h5" className={classes.value2}>
-                xxx rvx
-                </Typography>
-            </div>*/}
-              <div className={classes.paper2_item}>
-                <Typography variant="h5" className={classes.label2}>
-                  Total Supply:
-                </Typography>
-                <Typography variant="h5" className={classes.value2}>
-                  25,000,000 RVX
-                </Typography>
-              </div>
-            </Paper>
-          </Grid>
-        </Grid>
-      </Container>
-      <Container
-        maxWidth="lg"
-        className={`${classes.container2} ${classes.container2_gap_down}`}
-      >
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
+      {!oldLos && (
+        <div>
+          <Container maxWidth="md" className={classes.container1}>
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={4}>
-                <div className={classes.paper3}>
-                  <Typography
-                    variant="h3"
-                    className={`${classes.label3} ${classes.label3_gap_down}`}
-                  >
-                    Unstaked Balance
-                  </Typography>
-                  <Typography variant="h3" className={classes.value3}>
-                    {Math.floor(pools[0].tokens[0].balance * 100000000) / 100000000} RVX
-                  </Typography>
-                </div>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <div className={classes.paper3}>
-                  <Typography
-                    variant="h3"
-                    className={`${classes.label3} ${classes.label3_gap_down}`}
-                  >
-                    Currently Staking
-                  </Typography>
-                  <Typography variant="h3" className={classes.value3}>
-                    {Math.floor(pools[0].tokens[0].stakedBalance * 100000000) / 100000000} RVX
-                  </Typography>
-                </div>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <div className={classes.paper4}>
-                  <div className={classes.paper4Inner}>
-                   <Button
-                      className={classes.buttonStake}
-                      onClick={onToggleStakeDialog}
-                    >
-                      <Typography variant="h4" className={classes.buttonStake}>
-                        Stake
-                      </Typography>
-                    </Button>
-                    <Divider className={classes.stakingDivider} />
-                    <Button
-                      className={classes.buttonStake}
-                      onClick={onToggleUnstakeDialog}
-                    >
-                      <Typography variant="h4" className={classes.buttonStake}>
-                        Unstake
-                      </Typography>
-                    </Button>
-                   
-                  </div>
-                </div>
+              <Grid item xs={12} style={{ textAlign: "center" }}>
+                <Button
+                  onClick={() => onToggleOldLos()}
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  className={classes.buttonBack}
+                  startIcon={<ArchiveSharpIcon />}
+                >
+                  LoS v2 (deprecated)
+                </Button>
               </Grid>
             </Grid>
-          </Grid>
-        </Grid>
-      </Container>
-      <Container maxWidth="lg" className={classes.container3}>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-               {/*<div className={classes.paper7}>
-                  <Typography variant="h4" className={classes.rewardsText}>
-                    RVX Balance
+              <Grid item xs={12} sm={4}>
+                <Paper className={classes.paper}>
+                  <Typography variant="h6" className={classes.label1}>
+                    Total RVX Locked
                   </Typography>
-                  <Typography variant="h4" className={classes.rewardsValueText}>
-                    {Math.floor(pools[0].tokens[0].rRvxbalance * 100000000) / 100000000}
+                  <Typography variant="h3" className={classes.value1}>
+                    {prettyTotalStaked()} / 5.3M RVX
                   </Typography>
-          </div>*/} 
+                </Paper>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <div className={classes.paper6}>
-                  <Typography variant="h4" className={classes.rewardsText}>
-                    Rewards Available
+              <Grid item xs={12} sm={4}>
+                <Paper className={classes.paper}>
+                  <Typography variant="h6" className={classes.label1}>
+                    RVX Price
                   </Typography>
-                  <Typography variant="h4" className={classes.rewardsValueText}>
-                    {pools[0].tokens[0].rewardsAvailable}  RVX
+                  <Typography variant="h3" className={classes.value1}>
+                    {pools[0].tokens[0].rvxpriceusd} $
                   </Typography>
-                </div>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Paper className={classes.paper}>
+                  <Typography variant="h6" className={classes.label1}>
+                    APR
+                  </Typography>
+                  <Typography variant="h3" className={classes.value1}>
+                    15 %
+                  </Typography>
+                </Paper>
               </Grid>
             </Grid>
-          </Grid>
-          <Grid item xs={12}>
+          </Container>
+
+          <Container
+            maxWidth="lg"
+            className={`${classes.container2} ${classes.container2_gap_down}`}
+          >
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <div className={classes.paper5}>
-                  {<Button
-                    variant="contained"
-                    disableElevation
-                    className={classes.buttonClaim}
-                    onClick={onToggleConfirmationClaimAlert}
-                  >
-                    <Typography variant="h3">Claim Rewards</Typography>
-                  </Button> }
-                </div>
+              <Grid item xs={12}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={4}>
+                    <div className={classes.paper3}>
+                      <Typography
+                        variant="h3"
+                        className={`${classes.label3} ${classes.label3_gap_down}`}
+                      >
+                        Unstaked Balance
+                      </Typography>
+                      <Typography variant="h3" className={classes.value3}>
+                        {Math.floor(pools[1].tokens[0].balance * 100000000) /
+                          100000000}{" "}
+                        RVX
+                      </Typography>
+                    </div>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <div className={classes.paper3}>
+                      <Typography
+                        variant="h3"
+                        className={`${classes.label3} ${classes.label3_gap_down}`}
+                      >
+                        Currently Staking
+                      </Typography>
+                      <Typography variant="h3" className={classes.value3}>
+                        {Math.floor(
+                          pools[1].tokens[0].stakedBalancev3 * 100000000
+                        ) / 100000000}{" "}
+                        RVX
+                      </Typography>
+                    </div>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <div className={classes.paper4}>
+                      <div className={classes.paper4Inner}>
+                        <Button
+                          className={classes.buttonStake}
+                          onClick={onToggleStakeDialog}
+                        >
+                          <Typography
+                            variant="h4"
+                            className={classes.buttonStake}
+                          >
+                            Stake
+                          </Typography>
+                        </Button>
+                        <Divider className={classes.stakingDivider} />
+                      </div>
+                    </div>
+                  </Grid>
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <div className={classes.paper5}>
-                  {<Button
-                    variant="contained"
-                    disableElevation
-                    className={classes.buttonExit}
-                    onClick={onToggleConfirmationClaimAndUnstakeAllAlert}
-                  >
-                    <Typography variant="h3">
-                      Exit: Claim and Unstake All
+            </Grid>
+          </Container>
+          <Container maxWidth="lg" className={classes.container3}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={6}>
+                    {/*<div className={classes.paper7}>
+          <Typography variant="h4" className={classes.rewardsText}>
+            RVX Balance
+          </Typography>
+          <Typography variant="h4" className={classes.rewardsValueText}>
+            {Math.floor(pools[0].tokens[0].rRvxbalance * 100000000) / 100000000}
+          </Typography>
+  </div>*/}
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <div className={classes.paper6}>
+                      <Typography variant="h4" className={classes.rewardsText}>
+                        Rewards Available to Claim on
+                      </Typography>
+                      <Typography
+                        variant="h4"
+                        className={classes.rewardsValueText}
+                      >
+                        {pools[1].tokens[0].timeStaked != 0?getDates(pools[1].tokens[0].timeStaked):"Not Available"}
+                      </Typography>
+                    </div>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={6}>
+                    <div className={classes.paper5}>
+                      {
+                        <Button
+                          variant="contained"
+                          disableElevation
+                          className={classes.buttonClaim}
+                          onClick={onToggleConfirmationClaimAlert}
+                        >
+                          <Typography variant="h3">Claim Rewards</Typography>
+                        </Button>
+                      }
+                    </div>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <div className={classes.paper5}>
+                      {/*
+                        <Button
+                          variant="contained"
+                          disableElevation
+                          className={classes.buttonExit}
+                          onClick={onToggleConfirmationClaimAndUnstakeAllAlert}
+                        >
+                          <Typography variant="h3">
+                            Exit: Claim and Unstake All
+                          </Typography>
+                        </Button>
+                      */}
+                    </div>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Container>
+        </div>
+      )}
+
+      {oldLos && (
+        <div>
+          <Container maxWidth="md" className={classes.container1}>
+            <Grid container spacing={3}>
+              <Grid item xs={12} style={{ textAlign: "center" }}>
+                <Button
+                  onClick={() => onToggleOldLos()}
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  className={classes.buttonBack}
+                  startIcon={<ArchiveSharpIcon />}
+                >
+                  LoS V3 (current)
+                </Button>
+              </Grid>
+            </Grid>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={4}>
+                <Paper className={classes.paper}>
+                  <Typography variant="h6" className={classes.label1}>
+                    Total Value Locked (USD)
+                  </Typography>
+                  <Typography variant="h3" className={classes.value1}>
+                    {prettyTVL()} $
+                  </Typography>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Paper className={classes.paper}>
+                  <Typography variant="h6" className={classes.label1}>
+                    RVX Price
+                  </Typography>
+                  <Typography variant="h3" className={classes.value1}>
+                    {pools[0].tokens[0].rvxpriceusd} $
+                  </Typography>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Paper className={classes.paper2}>
+                  {/* <div
+                  className={`${classes.paper2_item} ${classes.paper2_item_gap_down}`}
+                >
+                  <Typography variant="h5" className={classes.label2}>
+                    Circulating:
+                  </Typography>
+                  <Typography variant="h5" className={classes.value2}>
+                  xxx rvx
+                  </Typography>
+              </div>*/}
+                  <div className={classes.paper2_item}>
+                    <Typography variant="h5" className={classes.label2}>
+                      Total Supply:
                     </Typography>
-                  </Button>}
-                </div>
+                    <Typography variant="h5" className={classes.value2}>
+                      25,000,000 RVX
+                    </Typography>
+                  </div>
+                </Paper>
               </Grid>
             </Grid>
-          </Grid>
-        </Grid>
-      </Container>
+          </Container>
+
+          <Container
+            maxWidth="lg"
+            className={`${classes.container2} ${classes.container2_gap_down}`}
+          >
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={4}>
+                    <div className={classes.paper3}>
+                      <Typography
+                        variant="h3"
+                        className={`${classes.label3} ${classes.label3_gap_down}`}
+                      >
+                        Unstaked Balance
+                      </Typography>
+                      <Typography variant="h3" className={classes.value3}>
+                        {Math.floor(pools[0].tokens[0].balance * 100000000) /
+                          100000000}{" "}
+                        RVX
+                      </Typography>
+                    </div>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <div className={classes.paper3}>
+                      <Typography
+                        variant="h3"
+                        className={`${classes.label3} ${classes.label3_gap_down}`}
+                      >
+                        Currently Staking
+                      </Typography>
+                      <Typography variant="h3" className={classes.value3}>
+                        {Math.floor(
+                          pools[0].tokens[0].stakedBalance * 100000000
+                        ) / 100000000}{" "}
+                        RVX
+                      </Typography>
+                    </div>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    {/*
+                    <div className={classes.paper4}>
+                      <div className={classes.paper4Inner}>
+                        <Button
+                          className={classes.buttonStake}
+                          onClick={onToggleStakeDialog}
+                        >
+                          <Typography
+                            variant="h4"
+                            className={classes.buttonStake}
+                          >
+                            Stake
+                          </Typography>
+                        </Button>
+                        <Divider className={classes.stakingDivider} />
+                        <Button
+                          className={classes.buttonStake}
+                          onClick={onToggleUnstakeDialog}
+                        >
+                          <Typography
+                            variant="h4"
+                            className={classes.buttonStake}
+                          >
+                            Unstake
+                          </Typography>
+                        </Button>
+                      </div>
+                    </div>
+                    */ }
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Container>
+          <Container maxWidth="lg" className={classes.container3}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={6}>
+                    {/*<div className={classes.paper7}>
+          <Typography variant="h4" className={classes.rewardsText}>
+            RVX Balance
+          </Typography>
+          <Typography variant="h4" className={classes.rewardsValueText}>
+            {Math.floor(pools[0].tokens[0].rRvxbalance * 100000000) / 100000000}
+          </Typography>
+  </div>*/}
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <div className={classes.paper6}>
+                      <Typography variant="h4" className={classes.rewardsText}>
+                        Rewards Available
+                      </Typography>
+                      <Typography
+                        variant="h4"
+                        className={classes.rewardsValueText}
+                      >
+                        {pools[0].tokens[0].rewardsAvailable} RVX
+                      </Typography>
+                    </div>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={6}>
+                    <div className={classes.paper5}>
+                      {/*
+                        <Button
+                          variant="contained"
+                          disableElevation
+                          className={classes.buttonClaim}
+                          onClick={onToggleConfirmationClaimAlert}
+                        >
+                          <Typography variant="h3">Claim Rewards</Typography>
+                        </Button>
+                      */ }
+                    </div>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <div className={classes.paper5}>
+                      {
+                        <Button
+                          variant="contained"
+                          disableElevation
+                          className={classes.buttonExit}
+                          onClick={onToggleConfirmationClaimAndUnstakeAllAlert}
+                        >
+                          <Typography variant="h3">
+                            Exit: Claim and Unstake All
+                          </Typography>
+                        </Button>
+                      }
+                    </div>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Container>
+        </div>
+      )}
 
       <StakeDialog
         open={isStakeDialogOpen}
@@ -857,7 +1122,7 @@ const Staking = (props) => {
       <Backdrop
         className={classes.backdrop}
         open={isLoading}
-      //onClick={onToggleLoading}
+        //onClick={onToggleLoading}
       >
         <CircularProgress color="inherit" />
       </Backdrop>

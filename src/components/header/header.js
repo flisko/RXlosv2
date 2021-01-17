@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 //import PropTypes from "prop-types";
-import { useHistory, useLocation, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -9,7 +9,6 @@ import useScrollTrigger from "@material-ui/core/useScrollTrigger";
 
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -19,10 +18,7 @@ import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
 import Grid from "@material-ui/core/Grid";
-import SendIcon from "@material-ui/icons/Send";
 import PowerIcon from '@material-ui/icons/Power';
 
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
@@ -36,7 +32,7 @@ import { colors } from "../../theme";
 
 import { injected } from "../../stores/connectors";
 
-import { CONNECTION_CONNECTED,CONFIGURE, CONFIGURE_RETURNED, CONNECTION_DISCONNECTED,GET_BALANCES_PERPETUAL, GET_BALANCES_PERPETUAL_RETURNED,GET_BALANCES_FARMING,GET_BALANCES_FARMING_RETURNED } from "../../constants";
+import { CONNECTION_CONNECTED,CONFIGURE_RETURNED, CONNECTION_DISCONNECTED,GET_BALANCES_PERPETUAL, GET_BALANCES_PERPETUAL_RETURNED,GET_BALANCES_FARMING,GET_BALANCES_FARMING_RETURNED } from "../../constants";
 
 import { useSelector } from "react-redux";
 
@@ -79,7 +75,6 @@ const useStyles = makeStyles((theme) => ({
   },
   toolbar: {
     paddingTop: "3em",
-    paddingBottom: "3em",
     paddingLeft: "4em",
     paddingRight: "4em",
     //backgroundColor: "red",
@@ -167,8 +162,6 @@ function ElevationScroll(props) {
 }
 
 const Header = (props) => {
-  const idTokenInStore = useSelector((state) => state.Auth.idToken);
-  const addressInStore = useSelector((state) => state.Auth.address);
  // console.log("idTokenInStore", idTokenInStore);
  // console.log("addressInStore", addressInStore);
   let isconfigured = false;
@@ -179,7 +172,7 @@ const Header = (props) => {
   const [state, setState] = useState({
     left: false,
   });
-  const [account, setAccount] = useState(store.getStore("account"));
+  const [, setAccount] = useState(store.getStore("account"));
   const [address, setAddress] = useState("");
   const [logoRender, setLogoRender] = useState();
   const [isOpenUnlockModal, setIsOpenUnlockModal] = useState(false);
@@ -327,7 +320,7 @@ const Header = (props) => {
         onKeyDown={toggleDrawer(anchor, false)}
       >
         <List>
-          {["Staking"].map((text, index) => (
+          {["Staking"].map((text) => (
             <ListItem component={Link} to="/staking" button key={text}>
               <ListItemIcon>
                 <img src={RXLogo} className={classes.logoMobileMenu} />
@@ -338,7 +331,7 @@ const Header = (props) => {
         </List>
         <Divider />
         <List>
-          {["Farming"].map((text, index) => (
+          {["Farming"].map((text) => (
             <ListItem component={Link} to="/farming" button key={text}>
               <ListItemIcon>
                 <img src={YLogo} className={classes.logoMobileMenu} />

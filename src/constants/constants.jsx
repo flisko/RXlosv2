@@ -40,7 +40,9 @@ export const WITHDRAW_ALL_VAULT = 'WITHDRAW_ALL_VAULT'
 export const WITHDRAW_ALL_VAULT_RETURNED = 'WITHDRAW_ALL_VAULT_RETURNED'
 export const WITHDRAW = 'WITHDRAW'
 export const GET_REWARDS = "GET_REWARDS"
+export const GET_REWARDSV3 = "GET_REWARDSV3"
 export const EXIT = "EXIT"
+export const EXITOLD = "EXITOLD"
 
 
 // #Zap
