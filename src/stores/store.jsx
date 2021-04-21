@@ -1094,7 +1094,8 @@ class Store {
     );
 
     const stakeOf = await yCurveFiContract.methods.stakeOf(account.address).call();
-
+      console.log("staked balance:")
+      console.log(stakeOf)
     yCurveFiContract.methods
       .withdraw(stakeOf)
       .send({
