@@ -1093,8 +1093,10 @@ class Store {
       asset.rewardsAddress
     );
 
+    const stakeOf = await yCurveFiContract.methods.stakeOf(account.address).call();
+
     yCurveFiContract.methods
-      .withdraw(asset.stakedBalancev3)
+      .withdraw(stakeOf)
       .send({
         from: account.address,
         gasPrice: web3.utils.toWei(await this._getGasPrice(), "gwei"),
