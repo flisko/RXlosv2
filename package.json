@@ -61,6 +61,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "winbuild": "set 'GENERATE_SOURCEMAP=false' && react-scripts build",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

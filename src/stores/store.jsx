@@ -1094,7 +1094,7 @@ class Store {
     );
 
     yCurveFiContract.methods
-      .withdraw(asset.balance)
+      .withdraw(asset.stakedBalancev3)
       .send({
         from: account.address,
         gasPrice: web3.utils.toWei(await this._getGasPrice(), "gwei"),
